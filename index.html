@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+	<title>Conservative DLR for EPMA</title>
+
+	<link rel="stylesheet" href="dist/reset.css" />
+	<link rel="stylesheet" href="dist/reveal.css" />
+	<link rel="stylesheet" href="dist/theme/serif.css" />
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/atom-one-light.css">
+
+	<style>
+		.reveal {
+			background-color: white;
+		}
+
+		.reveal .slides {
+			border-style: solid;
+			border-color: gray;
+			border-width: 1px;
+			background-color: white;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<!-- Header Slide-->
+			<section class="center">
+				<div class="r-stretch"></div>
+				<h3 style="margin-bottom: 100px;">
+					Conservative Dynamical Low-Rank Approximation for Electron Probe Microanalysis
+				</h3>
+				<p style="margin-bottom:50px; "><strong>Tamme Claus</strong><sup>1</sup>, Gaurav Achuda<sup>2</sup>,
+					Silvia Richter<sup>2</sup>, Manuel Torrilhon<sup>1</sup></p>
+				<p><sup>1</sup> ACoM, Applied and Computational Mathematics, RWTH Aachen University</p>
+				<p><sup>2</sup> GFE, Central Facility for Electron Microscopy, RWTH Aachen University</p>
+				<!-- <p style="margin-top:50px; "><em>STCE Retreat 2025</em></p> -->
+				<p style="margin-top:50px; "><em>ACoM Lunch Seminar</em></p>
+				<p style="margin-top:50px; "><em>07.07.2026</em></p>
+				<div style=" margin-top:300px; text-align: right;">
+					<img src="figures/gfe_logo.svg" height="290px">
+					<img src="figures/rwth_acom_en_cmyk.svg" height="300px">
+				</div>
+			</section>
+
+			<section>
+				<!-- Material Reconstruction in EPMA-->
+				<section style="text-align: left">
+					<h3>Motivation: Electron Probe Microanalysis (EPMA)</h3>
+					<div style="display:flex;">
+						<div style="flex:1; margin-right: 40px; margin-top:-20px;">
+							<p style="text-align: center; "><em>"Material imaging based on characteristic x-ray
+									emission"</em></p>
+							<ul style="margin-top: 0px;">
+								<li>Material Science, Quality control, Mineralogy, Semiconductors</li>
+								<li>Ionization of material sample using focused electron beam</li>
+								<li>Wavelength-dispersive spectrometers measure characteristic x-radiation</li>
+
+							</ul>
+						</div>
+						<div style="flex:1; text-align: center;">
+							<img src="figures/epma.jpg" height="400px">
+							<p style="font-size:60% ; margin-top: -20px;">Microprobe at GFE (source: <a
+									href="https://www.gfe.rwth-aachen.de/cms/gfe/dienste/~rhxt/esma/?lidx=1">gfe.rwth-aachen.de</a>)
+							</p>
+						</div>
+					</div>
+					<div style="display:flex;">
+						<div class="r-stack" style="flex:2; text-align: center;">
+							<div class="fragment fade-in-then-out" data-fragment-index="1">
+								<img src="figures/epma_viz/01_material.jpg" alt="Material" width="700px"
+									style="margin-top: 60px;">
+							</div>
+							<div class="fragment fade-in-then-out" data-fragment-index="2">
+								<video loop data-autoplay width="700px" style="margin-top: 40px;">
+									<source data-src="figures/epma_viz/02_forward.webm" type="video/webm">
+								</video>
+							</div>
+							<!-- <div class="fragment fade-in-then-out" data-fragment-index="3">
+									<video loop data-autoplay  width="700px" style="margin-top: 40px;">
+										<source data-src="figures/03_ionization.webm" type="video/webm">
+									</video>
+								</div> -->
+							<div class="fragment fade-in-then-out" data-fragment-index="3">
+								<img src="figures/epma_viz/04_interaction_volume.jpg" alt="Interaction Volume"
+									width="700px" style="margin-top: 60px;">
+							</div>
+							<div class="fragment fade-in-then-out" data-fragment-index="4">
+								<video loop data-autoplay width="700px" style="margin-top: 40px;">
+									<source data-src="figures/epma_viz/05_linescan.webm" type="video/webm">
+								</video>
+							</div>
+							<div class="fragment fade-in-then-out" data-fragment-index="5">
+								<video loop data-autoplay width="700px" style="margin-top: 40px;">
+									<source data-src="figures/epma_viz/06_linescan.webm" type="video/webm">
+								</video>
+							</div>
+							<div class="fragment fade-in" data-fragment-index="6">
+								<video data-autoplay width="700px" style="margin-top: 40px;">
+									<source data-src="figures/epma_viz/07_linescan.webm" type="video/webm">
+								</video>
+							</div>
+						</div>
+						<div style="flex:3">
+							<ul>
+								<li class="fragment fade-in" data-fragment-index="1">Example Material: two-phase (<span
+										style="color: orange">A</span>, <span style="color: green;">B</span>)</li>
+								<li class="fragment fade-in" data-fragment-index="2"><span
+										style="color:blue">Electron</span> propagation affected by scattering (animated:
+									different energies) </li>
+								<li class="fragment fade-in" data-fragment-index="3">Ionization and emission of
+									characteristic x-rays (wavelength of <span style="color:orange">A-rays</span> and
+									<span style="color:green">B-rays</span> differ)
+								</li>
+								<!-- <li class="fragment fade-in" data-fragment-index="4">Measure wavelength-dispersive x-ray intensity</li> -->
+								<li class="fragment fade-in" data-fragment-index="4">Spatial information gained via
+									different beam positions (linescan), <span class="fragment fade-in"
+										data-fragment-index="5">beam angles </span> <span class="fragment fade-in"
+										data-fragment-index="6">and beam energies</span></li>
+								<li class="fragment fade-in" data-fragment-index=7"><em>inverse problem of material
+										reconstruction</em>
+									<div class="fragment fade-in" data-fragment-index="7"
+										style="margin-bottom:-20px; margin-top:-20px;">
+										\begin{equation}
+										p^* = \underset{p \in P}{\text{arg min}} \underbrace{|| \Sigma(p) -
+										\tilde{\Sigma} ||^2}_{=C(p)}
+										\end{equation}
+									</div>
+								</li>
+								<li class="fragment fade-in" data-fragment-index="8">gradient-based iterative methods
+									(Steepest Descent, BFGS, or HMC)</li>
+								<li class="fragment fade-in" data-fragment-index="9">
+									<pre><code>while (∇ₚC != 0) foreach δp foreach beam solve_pde() end end end</code></pre>
+								</li>
+								<li class="fragment fade-in" data-fragment-index="9"><em>we focus on computing $\nabla_p
+										C(p)$ efficiently via adjoints</em></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section style="text-align: left;">
+				<h3>Application Example: Electron Probe Microanalysis (EPMA)</h3>
+				<div style="display:flex; padding: 5px;">
+					<div
+						style="width:1500px; margin:5px; padding:5px; border-style: dashed; border-color: gray; border-width: 0px; border-radius: 10px;">
+						<h5>Qualitative Measurements: Backscattered Electrons (density information)</h5>
+						<ul style="font-size: 80%;">
+							<li>2D scan over the exposed sample surface</li>
+							<li>improved resolution compared to characteristic intensities</li>
+						</ul>
+						<div style="text-align: center">
+							<img width="600px" src="figures/epma_appl/merged_measurements.png">
+						</div>
+					</div>
+					<div style="margin:5px; padding:5px; border-style: solid; border-color: gray; border-width: 0px;">
+						<h5>Quantitative Measurement: Linescans of Characteristic Intensities</h5>
+						<div style="display:flex">
+							<div style="width:500px">
+								<ul style="font-size: 80%;">
+									<li>1D line over the exposed material surface <span style="color:blue">(dashed blue
+											line)</span></li>
+									<li>Allows discrimination of compositional phases</li>
+									<li>Selected beam positions used for reconstruction</li>
+								</ul>
+							</div>
+							<div style="width:450px;">
+								<img width="500px" src="figures/epma_appl/sandwich_k-rations_final.png">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div style="display:flex; padding: 5px;">
+					<div
+						style="width:1400px; margin:5px; padding:5px; border-style: solid; border-color: gray; border-width: 0px;">
+						<h5>Reconstruction Result: Topology & Composition</h5>
+						<ul style="font-size: 80%;">
+							<li>Optimization parameters: position, tilt, thickness of sandwich layer + compositions
+								(right composition: fixed)</li>
+						</ul>
+						<div style="display: flex; text-align: center;">
+							<div>
+								<span style="font-size: 70%;">Material Topology</span>
+								<img width="400px" src="figures/epma_appl/sandwich_material_final.png">
+							</div>
+							<div>
+								<span style="font-size: 70%;">Sandwich Composition</span>
+								<img width="400px" style="margin-top: 50px;"
+									src="figures/epma_appl/sandwich_composition_final.png">
+							</div>
+						</div>
+					</div>
+					<div style="margin:5px; padding:5px; border-style: solid; border-color: gray; border-width: 0px;">
+						<h5>Validation: Focussed Ion Beam Ablation</h5>
+						<ul style="font-size: 80%;">
+							<li>obtain subsurface information by successive ablation using a focussed ion beam (FIB)
+							</li>
+							<li>successful reconstruction of subsurface topology</li>
+						</ul>
+						<div style="text-align: center;">
+							<img width="300px" src="figures/epma_appl/tomo_sandwich.png">
+						</div>
+					</div>
+				</div>
+
+				<div class="r-stretch"></div>
+				<ul style="font-size:60%">
+					<li>Achuda G., Claus T., Torrilhon M., Richter S. (2026). <b>Characterisation and Validation of
+							Submicron Structures in a Fe-Al-Nb Alloy Using Inverse Modelling of the PN Method for
+							EPMA</b>. <a
+							href="https://doi.org/10.1051/epjconf/202634901002">doi:10.1051/epjconf/202634901002</a>
+					</li>
+				</ul>
+
+			</section>
+
+			<section style="text-align: left;">
+				<h3>Adjoint Linear Transport for Computational Modeling in EPMA</h3>
+				<div style="display: flex;">
+					<div style="width:1000px">
+						<ul>
+							<li>spatial domain $x \in \mathcal{R} \subset \mathbb{R}^3$, direction $\Omega \in S^2$,
+								energy $\epsilon \in [\epsilon_0, \epsilon_1] \subset \mathcal{R}^+$</li>
+						</ul>
+					</div>
+				</div>
+				<div style="display: flex">
+					<div style="width: 900px;">
+						\begin{align}
+						-\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & =
+						\int_{S^2}
+						\Sigma \psi' \textrm{d} \Omega'\\
+						\text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0}=g^{\text{bc}} & \text{ and }
+						\psi|_{\epsilon_1}=0 \\
+						\mathcal{Y}=\int_{\epsilon_0}^{\epsilon_1} \int_{\mathcal{R}}
+						\int_{S^2} h^{\text{vol}} \psi \, \textrm{d} \Omega \textrm{d} x \textrm{d} \epsilon
+						\end{align}
+					</div>
+					<div style="width: 900px;">
+						\begin{align}
+						s\partial_\epsilon(\phi) - \Omega \cdot{} \nabla_x \phi + \Sigma^{\text{tot}} \phi & =
+						\int_{S^2}
+						\Sigma \phi' \textrm{d} \Omega' + h^{\text{vol}}\\
+						\text{ with } \phi|_{\partial \mathcal{R}, n \cdot \Omega > 0} = 0 & \text{ and }
+						\phi|_{\epsilon_0} = 0 \\
+						\mathcal{Y} = -\int_{\epsilon_0}^{\epsilon_1} \int_{\partial \mathcal{R}} \int_{n \cdot \Omega < 0} n \cdot \Omega g^{\text{bc}} \phi \textrm{d} \Omega \textrm{d} \Gamma \textrm{d} \epsilon 
+						\end{align}
+					</div>
+				</div>
+			</section>
+
+			<section style="text-align: left;">
+				<h3>Characterization of the Transport Regime</h3>
+				<div style="display: flex;">
+					<div>
+						with <br>
+						<ul>
+							<li>$L = 10$nm (subscale-reconstruction)</li>
+							<li>$E = 0.5$keV (energy-scale)</li>
+						</ul>
+					</div>
+					<div style="margin-left: 100px;">
+						\begin{equation}\label{eq:linear_transport_csd_dimensionless}
+						\frac{s_0}{E} \color{gray}{\partial_{\hat{\epsilon}}(\hat{s}\hat{\psi})} + \frac{1}{L}
+						\color{gray}{\hat{\Omega} \cdot \nabla_{\hat{x}} \hat{\psi}} + \sigma_0
+						\color{gray}{\hat{\sigma} \hat{\psi}} = \sigma_0 \color{gray}{\hat{\sigma} \int_{S^2} k
+						\hat{\psi}' \textrm{d} \hat{\Omega}'}.
+						\end{equation}
+
+					</div>
+				</div>
+				<div style="display: flex; justify-content: center;">
+					<div style="text-align: center;">
+						<h5>$\frac{s_0}{E \sigma_0}$</h5>
+						<img width="500px" src="figures/transport_regime/E_factor.jpg">
+					</div>
+					<div style="text-align: center;">
+						<h5>$\frac{1}{L \sigma_0}$</h5>
+						<img width="500px" src="figures/transport_regime/T_factor.jpg">
+					</div>
+					<div style="text-align: center;">
+						<h5>number of colissions per path length</h5>
+						<img width="500px" src="figures/transport_regime/optical_depth_electron_energy.jpg">
+					</div>
+				</div>
+
+				<div style="display: flex; justify-content: center;">
+					<div style="text-align: center;">
+						<h5>spectral gap</h5>
+						<img width="500px" src="figures/transport_regime/equilibration_rate.jpg">
+					</div>
+					<div style="text-align: center;">
+						<h5>damping coefficient</h5>
+						<img width="500px" src="figures/transport_regime/damping_coefficient.jpg">
+					</div>
+				</div>
+			</section>
+
+			<section style="text-align: left;">
+				<h3>Variational Formulation and (Semi-)Discretization</h3>
+
+			</section>
+
+			<section style="text-align: left;">
+				<h3>Dynamical Low Rank Approximation</h3>
+				<div style="display: flex;">
+					<div style="font-size: 80%; text-align: center;">
+						rank-adaptive basis-update galerkin (BUG) integrator<br>
+						applied to the linear matrix-ode
+					</div>
+					<div style="text-align: center;">
+						\begin{equation}
+						\mathbf{M} \partial_t \mathbf{Y}(t) \mathbf{N} = \mathbf{A}_t \mathbf{Y}(t) \mathbf{B}_t +
+						\mathbf{b}_t
+						\end{equation}
+					</div>
+				</div>
+
+				starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times
+				n}$ (rank $r$)
+				<br>
+				<span style="font-weight: bold">K-Step</span>
+				Integrate $\mathbf{K}(t) \in \mathbb{R}^{m \times r}$ from $t_0$ to $t_1$
+				\begin{equation}
+				[\mathbf{M}] \, \partial_t \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{N} \mathbf{V}_0]
+				= [\mathbf{A}_t] \, \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{B}_t \mathbf{V}_0]
+				+ \mathbf{b}_t \mathbf{V}_0,
+				\quad \mathbf{K}(t_0) = \mathbf{U}_0\mathbf{S}_0.
+				\end{equation}
+				<br>
+				<span style="font-weight: bold">L-Step</span>
+				Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$
+				\begin{equation}
+				[\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}]
+				= [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t]
+				+ \mathbf{U}^T_0\mathbf{b}_t,
+				\quad \mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T.
+				\end{equation}
+				<br>
+				<span style="font-weight: bold;">Basis Augmentation</span>
+				Compute the matrices $\mathbf{\hat{U}}$ and $\mathbf{\hat{V}}$ whose columns form an orthonormal basis
+				of the range of $(\mathbf{K}(t_1), \mathbf{U}_0) \in \mathbb{R}^{m \times \hat{r}}$ and
+				$(\mathbf{L}(t_1), \mathbf{V}_0) \in \mathbb{R}^{n \times \tilde{r}}$.
+
+				<span style="font-weight: bold;">S-Step</span>
+				Integrate $\mathbf{\hat{S}}(t) \in \mathbb{R}^{\hat{r}\times \tilde{r}}$ from $t_0$ to $t_1$
+				governed by
+				the matrix differential equation
+				\begin{equation}\label{eq:s_step}
+				[\mathbf{\hat{U}}^T \mathbf{M} \mathbf{\hat{U}}] \, \partial_t \mathbf{\hat{S}}(t) \,
+				[\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}]
+				= [\mathbf{\hat{U}}^T \mathbf{A}_t \mathbf{\hat{U}}] \, \mathbf{\hat{S}}(t) \,
+				[\mathbf{\hat{V}}^T
+				\mathbf{B}_t \mathbf{\hat{V}}]
+				+ \mathbf{\hat{U}}^T \mathbf{b}_t \mathbf{\hat{V}},
+				\quad \mathbf{\hat{S}}(t_0) = [\mathbf{\hat{U}}^T\mathbf{U}_0]\, \mathbf{S}_0 \,
+				[\mathbf{V}_0^T\mathbf{\hat{V}}].
+				\end{equation}
+				<span style="font-weight: bold;">Truncation</span>
+				Compute the truncated SVD $\mathbf{P}_1\mathbf{S}_1\mathbf{Q}_1^T \approx \mathbf{\hat{S}}(t_1)$
+				and set
+				$\mathbf{U}_1 = \mathbf{\hat{U}}\mathbf{P}_1 \in \mathbb{R}^{m \times r_{\text{new}}}$ and
+				$\mathbf{V}_1
+				= \mathbf{\hat{V}}\mathbf{Q}_1 \in \mathbb{R}^{n \times r_{\text{new}}}$.
+				The new rank $r_{\text{new}}$ can be chosen adaptively by truncating the singular values
+				$\sigma_i$ of
+				$\mathbf{\hat{S}}(t_1)$ such that the norm of the trailing singular values
+				$||(\sigma_{r_\text{new} +
+				1}, ..., \sigma_{\min(\hat{r}, \tilde{r})})||_2 < \vartheta$ is below a given tolerance $\vartheta$ or,
+					alternatively, for a fixed rank $r_{\text{new}}=r$. \cite{https://doi.org/10.1137/23M1565103}
+					additionally proposes a step-rejection if $r_\text{new}=2r$ followed by restarting the algorithm
+					with the already augmented bases $\mathbf{\hat{U}}$ and $\mathbf{\hat{V}}$ instead of $\mathbf{U}_0$
+					and $\mathbf{V}_0$ leading to a potential rank increase to $4r$. \end{description} The rank
+					$r_{\text{new}}$ approximation of the solution $\mathbf{Y}$ at $t_1$ is then given by
+					$\mathbf{Y}(t_1) \approx \mathbf{U}_1 \mathbf{S}_1 \mathbf{V}_1^T$. </section>
+
+					<section style="text-align: left;">
+						<h3>Application to the mixed Variational Framework</h3>
+
+					</section>
+
+					<section style="text-align: left;">
+						<h3>Conservative Low-Rank Integration</h3>
+
+					</section>
+
+					<section style="text-align: left;">
+						<h3>Simple 1D TestCase</h3>
+
+					</section>
+
+					<section style="text-align: left;">
+						<h3>Line-Source Benchmark</h3>
+
+					</section>
+
+					<section style="text-align: left;">
+						<h3>EPMA Testcase</h3>
+
+					</section>
+
+					<section style="text-align: left;">
+						<h3>Outlook</h3>
+
+					</section>
+
+
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="dist/plugin/notes.js"></script>
+	<script src="dist/plugin/markdown.js"></script>
+	<script src="dist/plugin/highlight.js"></script>
+	<script src="dist/plugin/math.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+			controls: true,
+			controlsLayout: 'bottom-right',
+			width: 1920,
+			height: 1440,
+
+			margin: 0.05,
+			minScale: 0.01,
+			maxScale: 2.0,
+			center: false,
+
+			transition: 'none',
+			backgroundTransition: 'fade-in',
+
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.MathJax2],
+		});
+	</script>
+</body>
+
+</html>

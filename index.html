@@ -134,13 +134,13 @@
 										\end{equation}
 									</div>
 								</li>
-								<li class="fragment fade-in" data-fragment-index="8">gradient-based iterative methods
+								<!-- <li class="fragment fade-in" data-fragment-index="8">gradient-based iterative methods
 									(Steepest Descent, BFGS, or HMC)</li>
 								<li class="fragment fade-in" data-fragment-index="9">
 									<pre><code>while (∇ₚC != 0) foreach δp foreach beam solve_pde() end end end</code></pre>
 								</li>
 								<li class="fragment fade-in" data-fragment-index="9"><em>we focus on computing $\nabla_p
-										C(p)$ efficiently via adjoints</em></li>
+										C(p)$ efficiently via adjoints</em></li> -->
 							</ul>
 						</div>
 					</div>
@@ -225,43 +225,57 @@
 			<section style="text-align: left;">
 				<h3>Adjoint Linear Transport for Computational Modeling in EPMA</h3>
 				<div style="display: flex;">
-					<div style="width:1000px">
+					<div style="width:1500px">
 						<ul>
 							<li>spatial domain $x \in \mathcal{R} \subset \mathbb{R}^3$, direction $\Omega \in S^2$,
 								energy $\epsilon \in [\epsilon_0, \epsilon_1] \subset \mathcal{R}^+$</li>
+							<li>Notation: $\langle \cdot \rangle = \int_{\mathcal{R}} \int_{S^2} \cdot \textrm{d}\Omega \textrm{d}x$, $[\cdot]_{\partial_x^\pm} = \int_{\partial \mathcal{R}} \int_{n \cdot \Omega \gtrless 0 } \cdot \textrm{d}\Omega \textrm{d}x$</li>
 						</ul>
 					</div>
 				</div>
 				<div style="display: flex">
 					<div style="width: 900px;">
+						<h5>Primal System</h5>
 						\begin{align}
-						-\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & =
-						\int_{S^2}
-						\Sigma \psi' \textrm{d} \Omega'\\
-						\text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0}=g^{\text{bc}} & \text{ and }
-						\psi|_{\epsilon_1}=0 \\
-						\mathcal{Y}=\int_{\epsilon_0}^{\epsilon_1} \int_{\mathcal{R}}
-						\int_{S^2} h^{\text{vol}} \psi \, \textrm{d} \Omega \textrm{d} x \textrm{d} \epsilon
+							-\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & = \int_{S^2} \Sigma \psi' \textrm{d} \Omega'\\
+							\text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0} = g^{\text{bc}} & \text{ and } \psi|_{\epsilon_1} = 0 \\
+							\mathcal{Y} = \int_{\epsilon_0}^{\epsilon_1} \langle h^{\text{vol}} \psi \rangle & \textrm{d} \epsilon
 						\end{align}
+						<ul>
+							<li><span style="text-decoration: underline;">valuable</span> to investigate/understand physics</li>
+						</ul>
 					</div>
 					<div style="width: 900px;">
+						<h5>Adjoint System</h5>
 						\begin{align}
-						s\partial_\epsilon(\phi) - \Omega \cdot{} \nabla_x \phi + \Sigma^{\text{tot}} \phi & =
-						\int_{S^2}
-						\Sigma \phi' \textrm{d} \Omega' + h^{\text{vol}}\\
-						\text{ with } \phi|_{\partial \mathcal{R}, n \cdot \Omega > 0} = 0 & \text{ and }
-						\phi|_{\epsilon_0} = 0 \\
-						\mathcal{Y} = -\int_{\epsilon_0}^{\epsilon_1} \int_{\partial \mathcal{R}} \int_{n \cdot \Omega < 0} n \cdot \Omega g^{\text{bc}} \phi \textrm{d} \Omega \textrm{d} \Gamma \textrm{d} \epsilon 
+							s\partial_\epsilon(\phi) - \Omega \cdot{} \nabla_x \phi + \Sigma^{\text{tot}} \phi & = \int_{S^2} \Sigma \phi' \textrm{d} \Omega' + h^{\text{vol}}\\
+							\text{ with } \phi|_{\partial \mathcal{R}, n \cdot \Omega > 0} = 0 & \text{ and } \phi|_{\epsilon_0} = 0 \\
+							\mathcal{Y} = -\int_{\epsilon_0}^{\epsilon_1} &[n \cdot \Omega g^{\text{bc}} \phi]_{\partial_x^-} \textrm{d} \epsilon 
 						\end{align}
+						<ul>
+							<li><span style="text-decoration: underline;">very valuable</span> to compute complete measurement data sets</li>
+						</ul>
 					</div>
 				</div>
+				<h5>Properties of the primal system:</h5>
+				<ul>
+					<li>Local dissipation of a <span style="font-style:italic; ">weighted L2-energy (entropy)</span> $\mu(x, \epsilon) = s(\epsilon, x) \int_{S^2} \psi^2(\epsilon, x, \Omega) \textrm{d}\Omega$.</li>
+					<li>Local conservation of a <span style="font-style: italic;">mass density</span> $\rho(\epsilon, x) = s(\epsilon, x) \int_{S^2} \psi(\epsilon, x, \Omega) \textrm{d}\Omega$.</li>
+					<li>Local dissipation/conservation lead to global dissipation/conservation (up to boundary fluxes and sources).</li>
+				</ul>
+				<br><br>
+				<h5>Implications for a discretization:</h5>
+				<ul>
+					<li>Ability to compute the adjoint system(s) is crucial.</li>
+					<li>A discretization of the adjoint should <span style="text-weight:bold">not</span> yield different results (dual-consistency).</li>
+				</ul>
 			</section>
 
 			<section style="text-align: left;">
 				<h3>Characterization of the Transport Regime</h3>
 				<div style="display: flex;">
 					<div>
-						with <br>
+						with characteristic length/energy<br>
 						<ul>
 							<li>$L = 10$nm (subscale-reconstruction)</li>
 							<li>$E = 0.5$keV (energy-scale)</li>
@@ -305,18 +319,42 @@
 			</section>
 
 			<section style="text-align: left;">
-				<h3>Variational Formulation and (Semi-)Discretization</h3>
+				<h3>Mixed-Variational Formulation and (Semi-)Discretization</h3>
+				\begin{align}
+					\partial_\epsilon m_\epsilon(\psi(\epsilon), \phi) + a_\epsilon(\psi(\epsilon), \phi) + b_\epsilon(\phi) = 0
+				\end{align}
+				\begin{align}
+					m_\epsilon(\psi(\epsilon), \phi) &= \langle -s \phi(\epsilon) \psi \rangle\\
+					a_\epsilon(\psi(\epsilon), \phi) &= \langle \Omega \cdot \nabla_x \psi^+ \phi^- - \phi^- \Omega \cdot \nabla_x \psi^+ + \Sigma^{\text{tot}}\psi\phi - \int_{S^2} \Sigma \psi' \textrm{d}\Omega' \phi \rangle + [|n\cdot\Omega|\psi^+\phi^+]\\
+					b_\epsilon(\phi) &= 2[n\cdot\Omega g^{\text{bc}}\phi^+]_{\partial_x^-}
+				\end{align}
+				\begin{equation}
+					\psi(x, \epsilon, \Omega) \approx \mathcal{X}^+(x)^T \Psi^+(\epsilon) \Upsilon^+(\Omega) + \mathcal{X}^-(x)^T \Psi^-(\epsilon)\Upsilon^-(\Omega)
+				\end{equation}
 
+				\begin{equation}\label{eq:rt_semidiscretization_matrix_form}
+					\begin{alignedat}{4}
+						& \mathbf{N}^+_e [-\partial_\epsilon (s_e \Psi^+)] \mathbf{I}^+ &  & - \mathbf{\nabla}_d\Psi^- \mathbf{\Omega}_d      &  & + \mathbf{N}^+_e [\tau_e \Psi^+] (\mathbf{I}^+ - \mathbf{k}^+_e) + \mathbf{\partial}_d \Psi^+ \mathbf{|\Omega|}_d &  & + \mathbf{b}^+ = 0 \\
+						& \mathbf{N}^-_e [-\partial_\epsilon (s_e \Psi^-)] \mathbf{I}^- &  & + \mathbf{\nabla}_d^T \Psi^+ \mathbf{\Omega}_d^T &  & + \mathbf{N}^-_e [\tau_e \Psi^-] (\mathbf{I}^- - \mathbf{k}^-_e)                                          &  & + \mathbf{b}^- = 0.
+					\end{alignedat}
+				\end{equation}
+
+				<div class="r-stretch"></div>
+				<ul style="font-size:60%">
+					<li>Egger, H., & Schlottbom, M. (2012). <b>A Mixed Variational Framework For The Radiative Transfer Equation</b>. <a href="https://doi.org/10.1142/s021820251150014x">doi:10.1142/s021820251150014x</a></li>
+					<li>Egger, H., & Schlottbom, M. (2014). <b>Numerical methods for parameter identification in stationary radiative transfer</b>. <a href="https://doi.org/10.1007/s10589-014-9657-9">doi:10.1007/s10589-014-9657-9</a></li>
+					<li>Egger, H., & Schlottbom, M. (2016). <b>A class of Galerkin Schemes for Time-Dependent Radiative Transfer</b>. <a href="https://doi.org/10.1137/15M1051336">doi:/10.1137/15M1051336</a></li>
+				</ul>
 			</section>
 
 			<section style="text-align: left;">
 				<h3>Dynamical Low Rank Approximation</h3>
 				<div style="display: flex;">
-					<div style="font-size: 80%; text-align: center;">
+					<div style="font-size: 80%; margin-top:20px; text-align: center;">
 						rank-adaptive basis-update galerkin (BUG) integrator<br>
 						applied to the linear matrix-ode
 					</div>
-					<div style="text-align: center;">
+					<div style="margin-left: 200px; text-align: center;">
 						\begin{equation}
 						\mathbf{M} \partial_t \mathbf{Y}(t) \mathbf{N} = \mathbf{A}_t \mathbf{Y}(t) \mathbf{B}_t +
 						\mathbf{b}_t
@@ -324,36 +362,32 @@
 					</div>
 				</div>
 
-				starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times
+				Starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times
 				n}$ (rank $r$)
 				<br>
 				<span style="font-weight: bold">K-Step</span>
 				Integrate $\mathbf{K}(t) \in \mathbb{R}^{m \times r}$ from $t_0$ to $t_1$
 				\begin{equation}
-				[\mathbf{M}] \, \partial_t \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{N} \mathbf{V}_0]
-				= [\mathbf{A}_t] \, \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{B}_t \mathbf{V}_0]
-				+ \mathbf{b}_t \mathbf{V}_0,
-				\quad \mathbf{K}(t_0) = \mathbf{U}_0\mathbf{S}_0.
+					[\mathbf{M}] \, \partial_t \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{N} \mathbf{V}_0]
+					= [\mathbf{A}_t] \, \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{B}_t \mathbf{V}_0]
+					+ \mathbf{b}_t \mathbf{V}_0,
+					\quad \mathbf{K}(t_0) = \mathbf{U}_0\mathbf{S}_0.
 				\end{equation}
 				<br>
 				<span style="font-weight: bold">L-Step</span>
 				Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$
 				\begin{equation}
-				[\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}]
-				= [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t]
-				+ \mathbf{U}^T_0\mathbf{b}_t,
-				\quad \mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T.
+					[\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}]
+					= [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t]
+					+ \mathbf{U}^T_0\mathbf{b}_t,
+					\quad \mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T.
 				\end{equation}
 				<br>
 				<span style="font-weight: bold;">Basis Augmentation</span>
-				Compute the matrices $\mathbf{\hat{U}}$ and $\mathbf{\hat{V}}$ whose columns form an orthonormal basis
-				of the range of $(\mathbf{K}(t_1), \mathbf{U}_0) \in \mathbb{R}^{m \times \hat{r}}$ and
-				$(\mathbf{L}(t_1), \mathbf{V}_0) \in \mathbb{R}^{n \times \tilde{r}}$.
-
+				Compute $\mathbf{\hat{U}} = \text{ortho}(\mathbf{K}(t_1), \mathbf{U}_0) \in \mathbb{R}^{m \times \hat{r}}$ and $\mathbf{\hat{V}} = \text{ortho}(\mathbf{L}(t_1), \mathbf{V}_0) \in \mathbb{R}^{n \times \tilde{r}}$.
+				<br>
 				<span style="font-weight: bold;">S-Step</span>
 				Integrate $\mathbf{\hat{S}}(t) \in \mathbb{R}^{\hat{r}\times \tilde{r}}$ from $t_0$ to $t_1$
-				governed by
-				the matrix differential equation
 				\begin{equation}\label{eq:s_step}
 				[\mathbf{\hat{U}}^T \mathbf{M} \mathbf{\hat{U}}] \, \partial_t \mathbf{\hat{S}}(t) \,
 				[\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}]
@@ -365,22 +399,12 @@
 				[\mathbf{V}_0^T\mathbf{\hat{V}}].
 				\end{equation}
 				<span style="font-weight: bold;">Truncation</span>
-				Compute the truncated SVD $\mathbf{P}_1\mathbf{S}_1\mathbf{Q}_1^T \approx \mathbf{\hat{S}}(t_1)$
+				Truncate the SVD $\mathbf{P}_1\mathbf{S}_1\mathbf{Q}_1^T \approx \mathbf{\hat{S}}(t_1)$
 				and set
 				$\mathbf{U}_1 = \mathbf{\hat{U}}\mathbf{P}_1 \in \mathbb{R}^{m \times r_{\text{new}}}$ and
 				$\mathbf{V}_1
 				= \mathbf{\hat{V}}\mathbf{Q}_1 \in \mathbb{R}^{n \times r_{\text{new}}}$.
-				The new rank $r_{\text{new}}$ can be chosen adaptively by truncating the singular values
-				$\sigma_i$ of
-				$\mathbf{\hat{S}}(t_1)$ such that the norm of the trailing singular values
-				$||(\sigma_{r_\text{new} +
-				1}, ..., \sigma_{\min(\hat{r}, \tilde{r})})||_2 < \vartheta$ is below a given tolerance $\vartheta$ or,
-					alternatively, for a fixed rank $r_{\text{new}}=r$. \cite{https://doi.org/10.1137/23M1565103}
-					additionally proposes a step-rejection if $r_\text{new}=2r$ followed by restarting the algorithm
-					with the already augmented bases $\mathbf{\hat{U}}$ and $\mathbf{\hat{V}}$ instead of $\mathbf{U}_0$
-					and $\mathbf{V}_0$ leading to a potential rank increase to $4r$. \end{description} The rank
-					$r_{\text{new}}$ approximation of the solution $\mathbf{Y}$ at $t_1$ is then given by
-					$\mathbf{Y}(t_1) \approx \mathbf{U}_1 \mathbf{S}_1 \mathbf{V}_1^T$. </section>
+				</section>
 
 					<section style="text-align: left;">
 						<h3>Application to the mixed Variational Framework</h3>
@@ -393,18 +417,147 @@
 					</section>
 
 					<section style="text-align: left;">
-						<h3>Simple 1D TestCase</h3>
-
+						<h3>Simple 1D TestCases</h3>
+						<div style="display: flex;">
+							<div>
+								<h5>Angle-average $\int_{S^2} \psi \, \textrm{d} \Omega$ ($t=1$)</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_linesource/final.jpg">
+							</div>
+							<div>
+								<h5>Entropy Difference</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_linesource/energy.jpg">
+							</div>
+							<div>
+								<h5>Mass Difference</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_linesource/mass.jpg">
+							</div>
+						</div>
+						<div style="display: flex;">
+							<div>
+								<h5>Angle-average $\int_{S^2} \psi \, \textrm{d} \Omega$</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_boundary/mass_over_time_energy.jpg">
+							</div>
+							<div>
+								<h5>Relative Entropy Evolution</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_boundary/energy.jpg">
+							</div>
+							<div>
+								<h5>Relative Mass Evolution</h5>
+								<img src="figures/figures_low_rank/1D_vacuum_boundary/mass.jpg">
+							</div>
+						</div>
 					</section>
 
 					<section style="text-align: left;">
 						<h3>Line-Source Benchmark</h3>
 
+						<h5>BUG Integrator</h5>
+						<div style="display: flex;">
+							<div style="text-align: center;">
+								<h5>$\vartheta = 2.5 \times 10^{-2}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:def}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>$\vartheta = 1.25 \times 10^{-2}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:def}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>$\vartheta = 6.25 \times 10^{-3}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:def}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>Lineout $(y = 0)$</h5>
+								<img width="1450px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:def}().jpg">
+							</div>
+						</div>
+						<h5>Mass-Conservative BUG Integrator</h5>
+						<div style="display: flex;">
+							<div style="text-align: center;">
+								<h5>$\vartheta = 2.5 \times 10^{-2}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:cons}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>$\vartheta = 1.25 \times 10^{-2}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:cons}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>$\vartheta = 6.25 \times 10^{-3}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:cons}().jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>Lineout $(y = 0)$</h5>
+								<img width="1450px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:cons}().jpg">
+							</div>
+						</div>
+						<div style="display: flex;">
+							<div style="text-align: center;">
+								<h5>$P_{47}$</h5>
+								<img src="figures/figures_low_rank/2D_linesource/final_47_full.jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>Rank Evolution</h5>
+								<img src="figures/figures_low_rank/2D_linesource/ranks.jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>Mass Evolution</h5>
+								<img src="figures/figures_low_rank/2D_linesource/mass.jpg">
+							</div>
+						</div>
+
 					</section>
 
 					<section style="text-align: left;">
 						<h3>EPMA Testcase</h3>
+						<div style="display: flex;">
+							<div style="text-align: center;">
+								<h5>$P_{21}$</h5>
+								<img width="1500px" src="figures/figures_low_rank/2D_epma/PN_result.jpg">
+							</div>
+							<div style="text-align: center;">
+								<h5>Monte Carlo <span style="font-family: monospace;">NeXLCore.jl</span> (adapted) </h5>
+								<img width="1500px" src="figures/figures_low_rank/2D_epma/MC_result.jpg">
+							</div>
+						</div>
+						<div style="display:flex;">
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/L1_error.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/L2_error.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/Linf_error.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/M_error.jpg">
+							</div>
+						</div>
+						<div style="display:flex;">
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/L1_error_memory.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/L2_error_memory.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/Linf_error_memory.jpg">
+							</div>
+							<div>
+								<img src="figures/figures_low_rank/2D_epma/M_error_memory.jpg">
+							</div>
+						</div>
+					</section>
 
+					<section style="text-align: left;">
+						<h3>EPMA Testcase</h3>
+						<div style="display: flex;">
+							<div style="text-align: center;">
+								<img src="figures/figures_low_rank/2D_epma_adjoint/measurements_Al.jpg">
+							</div>
+							<div style="text-align: center;">
+								<img src="figures/figures_low_rank/2D_epma_adjoint/measurements_Cr.jpg">
+							</div>
+						</div>
 					</section>
 
 					<section style="text-align: left;">

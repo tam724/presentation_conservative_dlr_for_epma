@@ -33,14 +33,14 @@
                 <!-- Header Slide-->
                 <section class="center">
                     <div class="r-stretch"></div>
-                    <!-- <h3 style="margin-bottom: 100px">Conservative Dynamical Low-Rank Approximation for Electron Probe Microanalysis</h3> -->
-                    <h3 style="margin-bottom: 100px">A robust rank-adaptive mass-conservative basis-update galerkin integrator for dynamical low-rank approximation of (adjoint) linear transport in a mixed-variational formulation with applications in electron probe microanalysis</h3>
+                    <h3 style="margin-bottom: 100px">Conservative Dynamical Low-Rank Approximation for Electron Probe Microanalysis</h3>
+                    <!-- <h3 style="margin-bottom: 100px">A robust rank-adaptive mass-conservative basis-update galerkin integrator for dynamical low-rank approximation of (adjoint) linear transport in a mixed-variational formulation with applications in electron probe microanalysis</h3> -->
                     <p style="margin-bottom: 50px"><strong>Tamme Claus</strong><sup>1</sup>, Gaurav Achuda<sup>2</sup>, Silvia Richter<sup>2</sup>, Manuel Torrilhon<sup>1</sup></p>
                     <p><sup>1</sup> ACoM, Applied and Computational Mathematics, RWTH Aachen University</p>
                     <p><sup>2</sup> GFE, Central Facility for Electron Microscopy, RWTH Aachen University</p>
                     <!-- <p style="margin-top:50px; "><em>STCE Retreat 2025</em></p> -->
-                    <p style="margin-top: 50px"><em>ACoM Lunch Seminar</em></p>
-                    <p style="margin-top: 50px"><em>14.07.2026</em></p>
+                    <p style="margin-top: 50px"><em>Eccomas 2026</em></p>
+                    <p style="margin-top: 50px"><em>20.07.2026</em></p>
                     <div style="margin-top: 50px; text-align: right">
                         <img src="figures/gfe_logo.svg" height="290px" />
                         <img src="figures/rwth_acom_en_cmyk.svg" height="300px" />
@@ -234,7 +234,10 @@
                     <div style="display: flex; margin-top: 20px; font-size: 90%; justify-content: center;">
                         <div style="border-style: dashed; border-width: 1px; border-color: gray; border-radius: 10px; padding: 10px;">
                             <h5>Primal System $\mathcal{L} \psi = g; \, \mathcal{Y} = \langle h, \psi \rangle$</h5>
-                            \begin{align} -\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & = \int_{S^2} \Sigma \psi' \textrm{d} \Omega'\\ \text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0} = g^{\text{bc}} & \text{ and } \psi|_{\epsilon_1} = 0 \\ \mathcal{Y} = \int_{\epsilon_0}^{\epsilon_1} \langle h^{\text{vol}} \psi \rangle & \textrm{d} \epsilon \end{align}
+                            \begin{align}
+                            -\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & = \int_{S^2} \Sigma \psi' \textrm{d} \Omega'\\
+                            \text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0} = g^{\text{bc}} & \text{ and } \psi|_{\epsilon_1} = 0 \\
+                            \mathcal{Y} = \int_{\epsilon_0}^{\epsilon_1} \langle h^{\text{vol}} \psi \rangle & \textrm{d} \epsilon \end{align}
                             <ul>
                                 <li><span style="text-decoration: underline">valuable</span> to investigate/understand physics</li>
                             </ul>
@@ -265,12 +268,16 @@
                         <li>Local dissipation/conservation lead to global dissipation/conservation (up to boundary fluxes and sources).</li>
                     </ul>
                     <br /><br />
-                    <h5>Implications for a Discretization:</h5>
+                    <h5>Implications for a Discretization for EPMA:</h5>
                     <ul style="font-size: 80%;">
-                        <li>Ability to compute the adjoint system(s) is crucial.</li>
                         <li>
-                            A discretization of the adjoint should
-                            <span style="text-weight: bold">not</span> yield different results (dual-consistency).
+                            Ability to compute the adjoint system(s) is crucial and should <span style="text-weight: bold">not</span> yield different results (dual-consistency).
+                        </li>
+                        <li>
+                            The (scalar) flux $\rho$ must be well approximated.
+                        </li>
+                        <li>
+                            Boundary conditions and boundary flux evaluations are important.
                         </li>
                     </ul>
                 </section>
@@ -327,7 +334,6 @@
 
                 <section style="text-align: left">
                     <h3>Mixed-Variational Formulation and (Semi-)Discretization</h3>
-
                     <div style="display: flex;">
                         <div>
                             <ul>
@@ -499,7 +505,7 @@
                         <span style="font-weight: bold; margin-left: 50px;">Augmentation:</span>
                         <span data_id="basis_augmentation_V">Compute $\mathbf{\hat{V}} = \text{ortho}(\mathbf{L}(t_1), \mathbf{V}_0) \in \mathbb{R}^{n \times \tilde{r}}$.</span>
                     </div>
-                    <div data-id="s-step">
+                    <div>
                         <span style="font-weight: bold">S-Step:</span>
                         Integrate $\mathbf{\hat{S}}(t) \in \mathbb{R}^{\hat{r}\times \tilde{r}}$ from $t_0$ to $t_1$.
                         With $\mathbf{\hat{S}}(t_0) = [\mathbf{\hat{U}}^T\mathbf{U}_0]\, \mathbf{S}_0 \, [\mathbf{V}_0^T\mathbf{\hat{V}}]$, solve
@@ -564,7 +570,6 @@
                     </div>
                     <div data-id="k-step">
                         <div data-id="k-step_no_augmentation">
-
                             <span style="font-weight: bold">Augmented K-Step:</span>
                             Integrate $\mathbf{\hat{K}}(t) \in \mathbb{R}^{m \times \hat{r}}$ from $t_0$ to $t_1$.
                             With $\mathbf{\hat{K}}(t_0) = \mathbf{U}_0\mathbf{S}_0[\mathbf{V}_0^T \mathbf{\hat{V}}]$, solve
@@ -575,10 +580,10 @@
                             </span>
                         </div>
                     </div>
-                    <div data-id="s-step">
-                        <span style="font-weight: bold">Conservative Truncation:</span> Compute $\mathbf{\hat{W}} = \mathbf{\hat{V}}^T \mathbf{W}$ and decompose $(\mathbf{\tilde{V}}, \mathbf{\tilde{R}}) = \text{qr}(\mathbf{\hat{V}} - \mathbf{W}\mathbf{\hat{W}}^T)$ (rank-revealing).<br>
-                        Truncate the $\mathbf{W}$-orthogonal part $\mathbf{\tilde{P}}_1 \mathbf{\tilde{S}}_1 \mathbf{\tilde{Q}}_1 = \text{svd}(\mathbf{\hat{K}}(t_1)\mathbf{\tilde{R}})$.
-                        Compute the left basis as $\mathbf{U}_1 \mathbf{R} = \text{qr}(\mathbf{\hat{K}}(t_1) \mathbf{\hat{W}})$
+                    <div class="fragment fade-in">
+                        <span style="font-weight: bold">Truncation:</span> Compute $\mathbf{\hat{W}} = \mathbf{\hat{V}}^T \mathbf{W}$ and the QR decomposition $\mathbf{\tilde{V}} \mathbf{\tilde{R}} = \mathbf{\hat{V}} - \mathbf{W}\mathbf{\hat{W}}^T$ (rank-revealing).<br>
+                        Truncate the SVD of the $\mathbf{W}$-orthogonal part $\mathbf{\tilde{P}}_1 \mathbf{\tilde{S}}_1 \mathbf{\tilde{Q}}_1^T \approx \mathbf{\hat{K}}(t_1)\mathbf{\tilde{R}}^T$.
+                        Compute the left basis as the QR decomposition $\mathbf{U}_1 \mathbf{R} = \mathbf{\hat{K}}(t_1) \mathbf{\hat{W}}, \mathbf{\tilde{P}}_1$
                         <span style="font-size: 90%;">
                         \begin{equation}
                             \mathbf{Y}(t_1) \approx \mathbf{U}_1 \underbrace{\mathbf{R} \begin{pmatrix} I & 0 \\ 0 & \mathbf{\tilde{S}}_1\end{pmatrix}}_{=\mathbf{S}_1} \underbrace{\begin{pmatrix} \mathbf{W} &  \mathbf{\tilde{V}} \mathbf{\tilde{Q}}_1 \end{pmatrix}^T}_{=\mathbf{V_1}^T}
@@ -587,12 +592,11 @@
                     </div>
                     
                     <div class="fragment fade-in" style="text-align: center; border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; padding: 10px; margin: 30px;">
-                        <p>Shares robustness (in the presence of smalle singular values) with the BUG integrator</p>
-                        <p>The <span style="font-weight: bold;">augmented K-step</span> satisfies the local conservation laws.</p>
-                        <p>The conservative truncation retains the conserved quantities.</p>
-                        <p>The conservative tuncation is stable.</p>
+                        <p style="margin:0px;">Shares robustness (in the presence of smalle singular values) with the BUG integrator</p>
+                        <p style="margin:0px;">The <span style="font-weight: bold;">augmented K-step</span> satisfies the local conservation laws.</p>
+                        <p style="margin:0px;">The conservative truncation retains the conserved quantities.</p>
+                        <p style="margin:0px;">The conservative tuncation is stable.</p>
                     </div>
-
                 </section>
 
                 <section style="text-align: left">
@@ -607,15 +611,15 @@
                     <div style="font-size: 50%;">
                     \begin{equation}
                         \begin{alignedat}{4}
-                        & [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [-\partial_\epsilon (s_e \mathbf{S}^+)] [(\color{Blue}{\mathbf{V}^+})^T\mathbf{I}^+ \color{Blue}{\mathbf{V^+}}] 
-                        & & - [(\color{Orange}{\mathbf{U}^+})^T \mathbf{\nabla}_d \color{Tomato}{\mathbf{U}^-}] \mathbf{S}^- [(\color{MediumPurple}{\mathbf{V}^-})^T \mathbf{\Omega}_d \color{Blue}{\mathbf{V^+}}] 
-                        & & + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [\tau_e \Psi^+]  [(\color{Blue}{\mathbf{V}^+})^T (\mathbf{I}^+ - \mathbf{k}^+_e)  \color{Blue}{\mathbf{V^+}}]  
-                        + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{\partial}_d\color{Orange}{\mathbf{U}^+}]  \Psi^+  [(\color{Blue}{\mathbf{V}^+})^T\mathbf{|\Omega|}_d \color{Blue}{\mathbf{V^+}}] 
-                        & & + (\color{Orange}{\mathbf{U}^+})^T\mathbf{b}^+\color{Blue}{\mathbf{V^+}} = 0 \\ 
-                        & [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [-\partial_\epsilon (s_e \mathbf{S}^-)] [(\color{MediumPurple}{\mathbf{V}^-})^T\mathbf{I}^- \color{MediumPurple}{\mathbf{V^-}}] 
-                        & & + [(\color{Tomato}{\mathbf{U}^-})^T \mathbf{\nabla}_d^T \color{Orange}{\mathbf{U}^+}] \mathbf{S}^+ [(\color{Blue}{\mathbf{V}^+})^T \mathbf{\Omega}_d^T \color{MediumPurple}{\mathbf{V^-}}] 
-                        & & + [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [\tau_e \Psi^-] [(\color{MediumPurple}{\mathbf{V}^-})^T (\mathbf{I}^- - \mathbf{k}^-_e) \color{MediumPurple}{\mathbf{V^-}}] 
-                        & & + (\color{Tomato}{\mathbf{U}^-})^T\mathbf{b}^-\color{MediumPurple}{\mathbf{V^-}} = 0.
+                            & [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [-\partial_\epsilon (s_e \mathbf{S}^+)] [(\color{Blue}{\mathbf{V}^+})^T\mathbf{I}^+ \color{Blue}{\mathbf{V^+}}] 
+                            & & - [(\color{Orange}{\mathbf{U}^+})^T \mathbf{\nabla}_d \color{Tomato}{\mathbf{U}^-}] \mathbf{S}^- [(\color{MediumPurple}{\mathbf{V}^-})^T \mathbf{\Omega}_d \color{Blue}{\mathbf{V^+}}] 
+                            & & + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [\tau_e \Psi^+]  [(\color{Blue}{\mathbf{V}^+})^T (\mathbf{I}^+ - \mathbf{k}^+_e)  \color{Blue}{\mathbf{V^+}}]  
+                            + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{\partial}_d\color{Orange}{\mathbf{U}^+}]  \Psi^+  [(\color{Blue}{\mathbf{V}^+})^T\mathbf{|\Omega|}_d \color{Blue}{\mathbf{V^+}}] 
+                            & & + (\color{Orange}{\mathbf{U}^+})^T\mathbf{b}^+\color{Blue}{\mathbf{V^+}} = 0 \\ 
+                            & [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [-\partial_\epsilon (s_e \mathbf{S}^-)] [(\color{MediumPurple}{\mathbf{V}^-})^T\mathbf{I}^- \color{MediumPurple}{\mathbf{V^-}}] 
+                            & & + [(\color{Tomato}{\mathbf{U}^-})^T \mathbf{\nabla}_d^T \color{Orange}{\mathbf{U}^+}] \mathbf{S}^+ [(\color{Blue}{\mathbf{V}^+})^T \mathbf{\Omega}_d^T \color{MediumPurple}{\mathbf{V^-}}] 
+                            & & + [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [\tau_e \Psi^-] [(\color{MediumPurple}{\mathbf{V}^-})^T (\mathbf{I}^- - \mathbf{k}^-_e) \color{MediumPurple}{\mathbf{V^-}}] 
+                            & & + (\color{Tomato}{\mathbf{U}^-})^T\mathbf{b}^-\color{MediumPurple}{\mathbf{V^-}} = 0.
                         \end{alignedat} 
                     \end{equation}
                     </div>
@@ -623,9 +627,11 @@
 
                 <section style="text-align: left">
                     <h3>Slab-Geometry Testcases (pure transport)</h3>
-                    \begin{equation}
-                        \partial_t \psi + \mu \partial_x \psi = 0 \quad \mu \in [-1, 1]
-                    \end{equation}
+                    <span style="font-size: 80%;">
+                        \begin{equation}
+                            \partial_t \psi + \mu \partial_x \psi = 0 \quad \mu \in [-1, 1]
+                        \end{equation}
+                    </span>
                     <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
                         <div style="text-align: center;">
                             <h5 style="transform: rotate(-90deg); transform-origin: center;">Planesource</h5>
@@ -643,7 +649,7 @@
                             <img src="figures/figures_low_rank/1D_vacuum_linesource/mass.jpg" />
                         </div>
                     </div>
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
+                    <div class="fragment fade-in" style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
                         <div style="text-align: center;">
                             <h5 style="transform: rotate(-90deg); transform-origin: center;">Boundary Excitation</h5>
                         </div>
@@ -663,8 +669,8 @@
                 </section>
 
                 <section style="text-align: left">
-                    <h3>Line-Source Benchmark with rank-adaptive (relative) truncation</h3>
-                    <div style="display: flex; justify-content: center; align-items: center;">
+                    <h3 style="margin: 0px;">Line-Source Benchmark with rank-adaptive (relative) truncation</h3>
+                    <div style="display: flex; justify-content: center; align-items: center; font-size: 80%;">
                         <div>
                             \begin{equation}
                                 \partial_t \psi + \Omega \cdot \nabla_x \psi + \psi = \frac{1}{4\pi} \int_{S^2} \psi' \textrm{d}\Omega
@@ -676,106 +682,101 @@
                         </div>
                     </div>
                     
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
+                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
                         <div>
-                            <h5 style="transform: rotate(-90deg); transform-origin: center; width: 290px;">BUG Integrator</h5>
+                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center;">BUG Integrator</h5>
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 2.5 \times 10^{-2}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 2.5 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 1.25 \times 10^{-2}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 1.25 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 6.25 \times 10^{-3}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 6.25 \times 10^{-3}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>Lineout $(y = 0)$</h5>
-                            <img width="1450px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">Lineout $(y = 0)$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:def}().jpg" />
                         </div>
                     </div>
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
+                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
                         <div>
-                            <h5 style="transform: rotate(-90deg); transform-origin: center; width: 290px;">Conservative BUG</h5>
+                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center;">Conservative BUG</h5>
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 2.5 \times 10^{-2}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 2.5 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 1.25 \times 10^{-2}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 1.25 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>$\vartheta = 6.25 \times 10^{-3}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">$\vartheta = 6.25 \times 10^{-3}$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center">
-                            <h5>Lineout $(y = 0)$</h5>
-                            <img width="1450px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5 style="margin: 0px;">Lineout $(y = 0)$</h5>
+                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:cons}().jpg" />
                         </div>
                     </div>
-                    <div style="display: flex">
-                        <div style="text-align: center">
-                            <h5>$P_{47}$</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/final_47_full.jpg" />
+                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
+                        <div style="text-align: center; margin-left: 50px;">
+                            <h5>Reference $P_{47}$</h5>
+                            <img style="margin: 0px; max-width:350px;" src="figures/figures_low_rank/2D_linesource/final_47_full.jpg" />
                         </div>
-                        <div style="text-align: center">
+                        <div style="text-align: center; margin-left: 50px;">
                             <h5>Rank Evolution</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/ranks.jpg" />
+                            <img style="margin: 0px; max-width:450px;" src="figures/figures_low_rank/2D_linesource/ranks.jpg" />
                         </div>
-                        <div style="text-align: center">
+                        <div style="text-align: center; margin-left: 50px;">
                             <h5>Mass Evolution</h5>
-                            <img src="figures/figures_low_rank/2D_linesource/mass.jpg" />
+                            <img style="margin: 0px; max-width:450px;" src="figures/figures_low_rank/2D_linesource/mass.jpg" />
                         </div>
                     </div>
                 </section>
 
                 <section style="text-align: left">
                     <h3>EPMA Testcase with Benchmarks/Memory Consumption</h3>
-                    <div style="display: flex">
+                    <div style="display: flex; justify-content: center;">
                         <div style="text-align: center">
-                            <h5>$P_{21}$</h5>
-                            <img width="1500px" src="figures/figures_low_rank/2D_epma/PN_result.jpg" />
+                            <h5 style="font-size: 80%;">$P_{27}$</h5>
+                            <img style="max-width: 500px" src="figures/figures_low_rank/2D_epma/PN_result.jpg" />
                         </div>
                         <div style="text-align: center">
-                            <h5>
-                                Monte Carlo
-                                <span style="font-family: monospace">NeXLCore.jl</span>
-                                (adapted)
+                            <h5 style="font-size: 80%;">
+                                Monte Carlo <span style="font-family: monospace">NeXLCore.jl</span> (adapted)
                             </h5>
-                            <img width="1500px" src="figures/figures_low_rank/2D_epma/MC_result.jpg" />
+                            <img style="max-width: 500px" src="figures/figures_low_rank/2D_epma/MC_result.jpg" />
                         </div>
                     </div>
-                    <div style="display: flex">
-                        <div>
-                            <img src="figures/figures_low_rank/2D_epma/L1_error.jpg" />
+                    <div style="display: flex; justify-content: center;">
+                        <div style="text-align: center;">
+                            <h5 style="font-size: 80%;">$||\langle \psi \rangle_{S^2} - \langle\psi_{P_{27}}\rangle_{S^2}||_{L^2(\mathcal{R})}$</h5>
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/L2_error.jpg" />
                         </div>
-                        <div>
-                            <img src="figures/figures_low_rank/2D_epma/L2_error.jpg" />
+                        <div style="text-align: center;">
+                            <h5 style="font-size: 80%;">$||\langle \psi \rangle_{S^2} - \langle\psi_{P_{27}}\rangle_{S^2}||_{L^\infty(\mathcal{R})}$</h5>
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/Linf_error.jpg" />
                         </div>
-                        <div>
-                            <img src="figures/figures_low_rank/2D_epma/Linf_error.jpg" />
-                        </div>
-                        <div>
-                            <img src="figures/figures_low_rank/2D_epma/M_error.jpg" />
+                        <div style="text-align: center;">
+                            <h5 style="font-size: 80%;">Measurement Error</h5>
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/M_error.jpg" />
                         </div>
                     </div>
-                    <div style="display: flex">
+                    <div style="display: flex; justify-content: center;">
                         <div>
-                            <img src="figures/figures_low_rank/2D_epma/L1_error_memory.jpg" />
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/L2_error_memory.jpg" />
                         </div>
                         <div>
-                            <img src="figures/figures_low_rank/2D_epma/L2_error_memory.jpg" />
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/Linf_error_memory.jpg" />
                         </div>
                         <div>
-                            <img src="figures/figures_low_rank/2D_epma/Linf_error_memory.jpg" />
-                        </div>
-                        <div>
-                            <img src="figures/figures_low_rank/2D_epma/M_error_memory.jpg" />
+                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/M_error_memory.jpg" />
                         </div>
                     </div>
                 </section>

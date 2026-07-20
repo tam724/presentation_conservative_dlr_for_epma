@@ -21,8 +21,16 @@
             .reveal .slides {
                 border-style: solid;
                 border-color: gray;
-                border-width: 1px;
+                border-width: 0px;
                 background-color: white;
+            }
+
+            .fragment.expand {
+                display: none;
+            }
+
+            .fragment.expand.visible {
+                display: block;
             }
         </style>
     </head>
@@ -39,7 +47,7 @@
                     <p><sup>1</sup> ACoM, Applied and Computational Mathematics, RWTH Aachen University</p>
                     <p><sup>2</sup> GFE, Central Facility for Electron Microscopy, RWTH Aachen University</p>
                     <!-- <p style="margin-top:50px; "><em>STCE Retreat 2025</em></p> -->
-                    <p style="margin-top: 50px"><em>Eccomas 2026</em></p>
+                    <p style="margin-top: 50px"><em>ECCOMAS 2026</em></p>
                     <p style="margin-top: 50px"><em>20.07.2026</em></p>
                     <div style="margin-top: 50px; text-align: right">
                         <img src="figures/gfe_logo.svg" height="290px" />
@@ -57,8 +65,8 @@
                                     <em>"Material imaging based on characteristic x-ray emission"</em>
                                 </p>
                                 <ul style="margin-top: 0px">
-                                    <li>Material Science, Quality control, Mineralogy, Semiconductors</li>
-                                    <li>Ionization of material sample using focused electron beam</li>
+                                    <li>Materials Science, Quality control, Mineralogy, Semiconductors</li>
+                                    <li>Ionization of a material sample using a focused electron beam</li>
                                     <li>Wavelength-dispersive spectrometers measure characteristic x-radiation</li>
                                 </ul>
                             </div>
@@ -117,16 +125,20 @@
                                     </li>
                                     <li class="fragment fade-in" data-fragment-index="7">
                                         <em>inverse problem of material reconstruction</em>
-                                        <div class="fragment fade-in" data-fragment-index="7" style="margin-bottom: -20px; margin-top: -20px">\begin{equation} p^* = \underset{p \in P}{\text{arg min}} \underbrace{|| \Sigma(p) - \tilde{\Sigma} ||^2}_{=C(p)} \end{equation}</div>
+                                        <p style="text-align: center;">$p^* = \underset{p \in P}{\text{arg min}} || \Sigma(p) - \tilde{\Sigma} ||^2$</p>
+                                    </li>
+                                    <li class="fragment fade-in" data-fragment-index="8">State of the art: - for reconstruction assume homogeneity;<br>
+                                        - for forward modeling: use Monte Carlo
                                     </li>
                                     <!-- <li class="fragment fade-in" data-fragment-index="8">gradient-based iterative methods
 									(Steepest Descent, BFGS, or HMC)</li>
-								<li class="fragment fade-in" data-fragment-index="9">
-									<pre><code>while (∇ₚC != 0) foreach δp foreach beam solve_pde() end end end</code></pre>
-								</li>
-								<li class="fragment fade-in" data-fragment-index="9"><em>we focus on computing $\nabla_p
-										C(p)$ efficiently via adjoints</em></li> -->
+                                    <li class="fragment fade-in" data-fragment-index="9">
+                                        <pre><code>while (∇ₚC != 0) foreach δp foreach beam solve_pde() end end end</code></pre>
+                                    </li>
+                                    <li class="fragment fade-in" data-fragment-index="9"><em>we focus on computing $\nabla_p
+                                            C(p)$ efficiently via adjoints</em></li> -->
                                 </ul>
+                                <div class="fragment fade-in" data-fragment-index="9" style="text-align: center; border-width: 2px; border-color: gray; border-radius: 10px; border-style: solid; margin: 20px; font-style: italic; font-weight: bold; padding: 20px">use models based on linear transport for reconstruction!</div>
                             </div>
                         </div>
                     </section>
@@ -134,16 +146,37 @@
                 <section style="text-align: left">
                     <h3>Application Example: Electron Probe Microanalysis (EPMA)</h3>
                     <div>
-                        <div class="fragment fade-in" style="position: absolute; width:100%; height: 100%; background-color: rgb(255 255 255 / 90%); z-index: 1000;">
-                            <div style="position: absolute; margin-top:300px; margin-left: 600px; margin-right: 200px; background-color: white; border-radius:10px; border-width: 5px; border-color: gray; border-style: solid; padding: 30px; opacity: 1;">
-                                <ul style="font-size: 80%;" style="margin: 0px;">
-                                    <li>more measurement data</li>
-                                    <li>more flexible material parametrization</li>
+                        <div class="fragment fade-in" style="position: absolute; width: 100%; height: 100%; background-color: rgb(255 255 255 / 90%); z-index: 1000">
+                            <div style="position: absolute; margin-top: 300px; margin-left: 500px; margin-right: 100px; background-color: white; border-radius: 10px; border-width: 5px; border-color: gray; border-style: solid; padding: 30px; opacity: 1">
+                                <div style="font-weight: bold">How to improve?</div>
+                                <ul style="font-size: 80%" style="margin: 0px">
+                                    <li>with more measurement data/flexible material parametrization</li>
+                                    <li>data from $71(\textrm{position})\times 2(\textrm{energy}) \times 3(\textrm{direction})$ beam positions</li>
                                 </ul>
-                                <img width="1200px" src="figures/epma_opti_material_combined.png" style="margin: 0px;">
-                                <p style="margin: 0px;">
-                                    $\to$ requires <span style="font-style: italic;">good</span> transport solver
-                                </p>
+                                <img width="1200px" src="figures/epma_opti_material_combined.png" style="margin: 0px; padding: 0px" />
+                                <p style="text-align: right; font-size: 50%; width: 100%; margin: 0px; padding: 0px">(non-physical material parameters)</p>
+                                <p style="margin: 0px">$\to$ requires <span style="font-style: italic; text-decoration: underline">good</span> transport solver</p>
+                                <p>measurement data generation is automatic $\to$ we must keep up.</p>
+                                <!-- <div>
+                                    <ul>
+                                        <li><span style="font-style: italic;">flexible:</span> handle arbitrary heterogeneous materials</li>
+                                        <li><span style="font-style: italic;">accurate:</span> match Monte Carlo reference results</li>
+                                        <li><span style="font-style: italic;">accessbile:</span> usable by EPMA users</li>
+                                        <li><span style="font-style: italic;">robust:</span> reliable on coarse resolutions</li>
+                                        <li><span style="font-style: italic;">efficient: </span> suitable for optimization loops</li>
+                                    </ul>
+                                </div> -->
+                                <!-- <div class="fragment expand" style="display:flex; justify-content: center; vertical-align: middle;">
+                                    <div style="vertical-align: middle;">
+                                        <p style="font-style: italic; text-decoration: underline;">why?</p>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                    <div style="margin-left: 10px;">
+                                        <p style="font-style: italic; text-align: center;">"all additional information about the material stems from the model"</p>
+                                    </div>
+                                </div> -->
                             </div>
                         </div>
 
@@ -195,7 +228,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div style="margin: 5px; padding: 5px; border-style: solid; border-color: gray; border-width: 0px">
+                            <div class="fragment fade-in" data-fragment-index="1" style="margin: 5px; padding: 5px; border-style: solid; border-color: gray; border-width: 0px">
                                 <h5>Validation: Focussed Ion Beam Ablation</h5>
                                 <ul style="font-size: 80%">
                                     <li>obtain subsurface information by successive ablation using a focussed ion beam (FIB)</li>
@@ -209,9 +242,8 @@
 
                         <div class="r-stretch"></div>
                         <ul style="font-size: 40%">
-                            <li>
-                                Claus T., Achuda G., Richter S., Torrilhon M. (2021). <b>An Adjoint Method for High-Resolution EPMA Based on the Spherical Harmonics (PN) Model of Electron Transport</b>. <a href="https://doi.org/10.1080/23324309.2024.2303508">doi:10.1080/23324309.2024.2303508</a>
-                            </li>
+                            <li>Seibold B., Frank M. (2014). <b>StaRMAP---A Second Order Staggered Grid Method for Spherical Harmonics Moment Equations of Radiative Transfer</b>. <a href="https://doi.org/10.1145/2590808">doi:10.1145/2590808</a></li>
+                            <li>Claus T., Achuda G., Richter S., Torrilhon M. (2021). <b>An Adjoint Method for High-Resolution EPMA Based on the Spherical Harmonics (PN) Model of Electron Transport</b>. <a href="https://doi.org/10.1080/23324309.2024.2303508">doi:10.1080/23324309.2024.2303508</a></li>
                             <li>
                                 Achuda G., Claus T., Torrilhon M., Richter S. (2026).
                                 <b>Characterisation and Validation of Submicron Structures in a Fe-Al-Nb Alloy Using Inverse Modelling of the PN Method for EPMA</b>.
@@ -221,67 +253,104 @@
                     </div>
                 </section>
 
-                <section style="text-align: left">
+                <section>
+                    <section style="text-align: left">
                     <h3>Adjoint Linear Transport for Computational Modeling in EPMA</h3>
                     <div style="display: flex">
-                        <div style="width: 1500px; font-size: 80%;">
+                        <!-- <div style="width: 1500px; font-size: 80%;">
                             <ul>
                                 <li>spatial domain $x \in \mathcal{R} \subset \mathbb{R}^3$, direction $\Omega \in S^2$, energy $\epsilon \in [\epsilon_0, \epsilon_1] \subset \mathcal{R}^+$</li>
                                 <li>Notation: $\langle \cdot \rangle = \int_{\mathcal{R}} \int_{S^2} \cdot \textrm{d}\Omega \textrm{d}x$ and $[\cdot]_{\partial_x^\pm} = \int_{\partial \mathcal{R}} \int_{n \cdot \Omega \gtrless 0 } \cdot \textrm{d}\Omega \textrm{d}x$</li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
-                    <div style="display: flex; margin-top: 20px; font-size: 90%; justify-content: center;">
-                        <div style="border-style: dashed; border-width: 1px; border-color: gray; border-radius: 10px; padding: 10px;">
-                            <h5>Primal System $\mathcal{L} \psi = g; \, \mathcal{Y} = \langle h, \psi \rangle$</h5>
-                            \begin{align}
-                            -\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi & = \int_{S^2} \Sigma \psi' \textrm{d} \Omega'\\
-                            \text{ with } \psi|_{\partial \mathcal{R}, n \cdot \Omega < 0} = g^{\text{bc}} & \text{ and } \psi|_{\epsilon_1} = 0 \\
-                            \mathcal{Y} = \int_{\epsilon_0}^{\epsilon_1} \langle h^{\text{vol}} \psi \rangle & \textrm{d} \epsilon \end{align}
+                    <div style="display: flex; margin-top: 20px; font-size: 90%; justify-content: center">
+                        <div style="border-style: dashed; border-width: 1px; border-color: gray; border-radius: 10px; padding: 10px; margin-left:10px;">
+                            <h5>Linear Transport Model for EPMA</h5>
                             <ul>
-                                <li><span style="text-decoration: underline">valuable</span> to investigate/understand physics</li>
+                                <li>stationary linear transport in continuous slowing down approximation
+                                    <p style="text-align: center;">
+                                        $-\partial_\epsilon(s \psi) + \Omega \cdot{} \nabla_x \psi + \Sigma^{\text{tot}} \psi = \int_{S^2} \Sigma \psi' \textrm{d} \Omega'$
+                                    </p>
+                                </li>
+                                <li>experimental setup: boundary conditions
+                                    <p style="text-align: center;">
+                                        $\psi|_{\partial \mathcal{R}, n \cdot \Omega < 0} = g^{\text{bc}} \text{ and } \psi|_{\epsilon_1} = 0$
+                                    </p></li>
+                                <li>observations/measurements: linear functionals $$\mathcal{Y} = \int_{\epsilon_0}^{\epsilon_1} \int_{\mathcal{R}} h^{\text{vol}} \int_{S^2} \psi \, \textrm{d} \Omega \textrm{d} x \textrm{d} \epsilon$$</li>
                             </ul>
+                            $\to$ <span style="text-decoration: underline">valuable</span> to investigate/understand physics
                         </div>
-                        <div style="border-style: dashed; border-width: 1px; border-color: gray; border-radius: 10px; padding: 10px; margin-left: 50px;">
-                            <h5>Adjoint System $\mathcal{L}^* \phi = h; \, \mathcal{Y} = \langle \phi, g \rangle$</h5>
-                            \begin{align} s\partial_\epsilon(\phi) - \Omega \cdot{} \nabla_x \phi + \Sigma^{\text{tot}} \phi & = \int_{S^2} \Sigma \phi' \textrm{d} \Omega' + h^{\text{vol}}\\ \text{ with } \phi|_{\partial \mathcal{R}, n \cdot \Omega > 0} = 0 & \text{ and } \phi|_{\epsilon_0} = 0 \\ \mathcal{Y} = -\int_{\epsilon_0}^{\epsilon_1} &[n \cdot \Omega g^{\text{bc}} \phi]_{\partial_x^-} \textrm{d} \epsilon \end{align}
+                        <div class="fragment fade-in" data-fragment-index="1" style="border-style: dashed; border-width: 1px; border-color: gray; border-radius: 10px; padding: 10px; margin-left: 50px; margin-right:10px; scale: 100%; max-width:800px;">
+                            <h5>Primal System</h5>
+                            $$\mathcal{L} \psi = g; \, \mathcal{Y} = \langle h, \psi \rangle$$
+                            <ul style="margin-bottom: 20px;">
+                                <li>with many beams setups $g$, little observation extractions $h$</li>
+                                <li>solve instead:</li>
+                            </ul>
+                            <h5>Adjoint System</h5>
+                            $$ \mathcal{L}^* \phi = h; \, \mathcal{Y} = \langle \phi, g \rangle $$
                             <ul>
                                 <li>
                                     <span style="text-decoration: underline">very valuable</span>
                                     to compute complete measurement data sets
                                 </li>
+                                <li>does (almost) not scale in the number of beam setups $g$</li>
                             </ul>
                         </div>
                     </div>
-                    <h5 style="margin-top: 30px;">Classial Properties of the Primal System:</h5>
-                    <ul style="font-size: 80%;">
-                        <li>
-                            Local dissipation of a
-                            <span style="font-style: italic">weighted L2-energy (entropy)</span>
-                            $\mu(x, \epsilon) = s(\epsilon, x) \int_{S^2} \psi^2(\epsilon, x, \Omega) \textrm{d}\Omega$.
-                        </li>
-                        <li>
-                            Local conservation of a
-                            <span style="font-style: italic">weighted (scalar) flux</span>
-                            $\rho(\epsilon, x) = s(\epsilon, x) \int_{S^2} \psi(\epsilon, x, \Omega) \textrm{d}\Omega$.
-                        </li>
-                        <li>Local dissipation/conservation lead to global dissipation/conservation (up to boundary fluxes and sources).</li>
-                    </ul>
-                    <br /><br />
-                    <h5>Implications for a Discretization for EPMA:</h5>
-                    <ul style="font-size: 80%;">
-                        <li>
-                            Ability to compute the adjoint system(s) is crucial and should <span style="text-weight: bold">not</span> yield different results (dual-consistency).
-                        </li>
-                        <li>
-                            The (scalar) flux $\rho$ must be well approximated.
-                        </li>
-                        <li>
-                            Boundary conditions and boundary flux evaluations are important.
-                        </li>
-                    </ul>
-                </section>
+                    <div class="fragment fade-in" data-fragment-index="2">
+                        <h5>Implications for a Discretization:</h5>
+                        <ul>
+                            <li>Discrete primal and adjoint systems should yield the same results (dual-consistency).</li>
+                            <li>The $s$-weighted scalar flux $\rho = s\int_{S^2} \psi \, \textrm{d} \Omega$ must be well approximated.
+                                <p style="text-align: center;">
+                                    local conservation law: $\quad -\partial_\epsilon \rho + \nabla_x \cdot (\int_{S^2} \Omega \psi \, \textrm{d} \Omega) = 0$
+                                </p>
+                                <ul>
+                                    <li>stopping power $s$ = energy loss per distance travelled</li>
+                                    <li>zeroth moment influences measurement</li>
+                                </ul>
+                            </li>
+                            <li>
+                                Local dissipation of a $s$-weighted L2-energy $\mu = s\int_{S^2} \psi^2 \, \textrm{d} \Omega$.
+                            </li>
+                        </ul>
+                            <!-- <div style="display: flex; justify-content: center; vertical-align: middle;">
+                                <div style="vertical-align: middle; max-width: 1500px;">
+                                    <h5 style="margin-top: 30px">Properties (classical)</h5>
+                                    <div style="display: flex; font-size: 80%; justify-content: center;">
+                                        <div style="margin-left: 0px;">
+                                            <span style="font-weight: bold;">Local Dissipation</span><br>
+                                            <ul>
+                                                <li>
+                                                    (weighted) L2-energy $\mu = s\int_{S^2} \psi^2 \, \textrm{d} \Omega$
+                                                </li>
+                                            </ul>.
+                                        </div>
+                                        <div style="margin-left: 100px;">
+                                            <span style="font-weight: bold;">Local Conservation</span><br>
+                                            <ul>
+                                                <li>
+                                                    weighted (scalar) flux $\rho = s\int_{S^2} \psi \, \textrm{d} \Omega$
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="vertical-align: middle; margin-top: 50px; margin-left: 20px; max-width: 700px;">
+                                    <h5>Implications for a Discretization for EPMA:</h5>
+                                    <ul style="font-size: 80%">
+                                        <li>Ability to compute the adjoint system(s) is crucial and should <span style="text-weight: bold">not</span> yield different results (dual-consistency).</li>
+                                        <li>The (scalar) flux $\rho$ must be well approximated.</li>
+                                        <li>Boundary conditions and boundary flux evaluations are important.</li>
+                                    </ul>
+                                </div>
+                        </div> -->
+                        
 
+                    </div>
+                </section>
                 <section style="text-align: left">
                     <h3>Characterization of the Transport Regime</h3>
                     <div style="display: flex; justify-content: center;">
@@ -332,60 +401,66 @@
                     </div>
                 </section>
 
-                <section style="text-align: left">
+                </section>
+                
+
+                <section>
+<section style="text-align: left">
                     <h3>Mixed-Variational Formulation and (Semi-)Discretization</h3>
-                    <div style="display: flex;">
+                    <div style="display: flex">
                         <div>
                             <ul>
                                 <li>
                                     split the (phase-space) flux $\psi$ into even/odd part $\psi^\pm$
-                                    <span style="font-size: 80%;">
-                                        \begin{equation}
-                                            \psi^\pm(-\Omega) = \pm \psi^\pm(\Omega)
-                                        \end{equation}
-                                    </span>
+                                    <p style="font-size: 90%; text-align: center;">$\psi^\pm(-\Omega) = \pm \psi^\pm(\Omega)$</p>
                                 </li>
                                 <li>
-                                    energy-transient variational formulation (test-function $\phi$)
-                                    <span style="font-size: 80%;">
-                                        \begin{align}
-                                            \partial_\epsilon m_\epsilon(\psi(\epsilon), \phi) + a_\epsilon(\psi(\epsilon), \phi) + b_\epsilon(\phi) = 0 \quad \text{ with }
-                                        \end{align}
-                                        \begin{align}
-                                            m_\epsilon(\psi(\epsilon), \phi) &= \langle -s \, \psi\,  \phi \rangle\\
-                                            a_\epsilon(\psi(\epsilon), \phi) &= \langle \Omega \cdot \nabla_x \psi^+ \phi^- - \phi^- \Omega \cdot \nabla_x \psi^+ + \Sigma^{\text{tot}}\, \psi \, \phi - \int_{S^2} \Sigma \psi' \textrm{d}\Omega' \phi \rangle + [|n\cdot\Omega|\psi^+\phi^+]\\
-                                            b_\epsilon(\phi) &= 2[n\cdot\Omega \, g^{\text{bc}}\phi^+]_{\partial_x^-}
-                                        \end{align}
-                                    </span>
+                                    use a mixed variational formulation:<br>
+                                    couple even/odd spherical harmonics $\Upsilon^\pm(\Omega)$ with $L^2/H^1$ spatial bases
+                                    <p style="font-size: 90%; text-align: center;">$\psi(x, \epsilon, \Omega) \approx \underbrace{\mathcal{X}^+(x)^T \Psi^+(\epsilon) \Upsilon^+(\Omega)}_{\approx \, \psi^+(x, \epsilon, \Omega)} + \underbrace{\mathcal{X}^-(x)^T \Psi^-(\epsilon)\Upsilon^-(\Omega)}_{\approx \, \psi^-(x, \epsilon, \Omega)}$</p>
                                 </li>
                             </ul>
                         </div>
                         <div>
-                            <img width="600px" src="figures/even_odd_sketch_standalone.png" style="margin-top: 100px;"/>
+                            <img width="500px" src="figures/even_odd_sketch_standalone.png" style="margin-top: 10px; margin-left: 20px;" />
                         </div>
                     </div>
-                    <ul>
-                        <li class="fragment fade-in">
-                            $P_N$ approximation: split spherical harmonics into even/odd $\Upsilon^\pm(\Omega)$, couple with spatial bases ($H^1$/$L^2$) and approximate
-                            <span style="font-size: 80%;">
-                                \begin{equation}
-                                    \psi(x, \epsilon, \Omega) \approx \underbrace{\mathcal{X}^+(x)^T \Psi^+(\epsilon) \Upsilon^+(\Omega)}_{\approx \, \psi^+(x, \epsilon, \Omega)} + \underbrace{\mathcal{X}^-(x)^T \Psi^-(\epsilon)\Upsilon^-(\Omega)}_{\approx \, \psi^-(x, \epsilon, \Omega)}
-                                \end{equation}
-                            </span>
-                        </li>
-                        <li class="fragment fade-in">
-                            leads to the kronecker-structured matrix-semidiscretization
-                            <span style="font-size: 80%;">
-                                \begin{alignat}{4}
-                                    & [\mathbf{N}^+_e] (-\partial_\epsilon (s_e \Psi^+)) [\mathbf{I}^+] & & - [\mathbf{\nabla}_d] \Psi^- [\mathbf{\Omega}_d] & & + [\mathbf{N}^+_e] (\tau_e \Psi^+) [\mathbf{I}^+ - \mathbf{k}^+_e] + [\mathbf{\partial}_d] \Psi^+ [\mathbf{|\Omega|}_d] & & + \mathbf{b}^+ = 0 \\
-                                    & [\mathbf{N}^-_e] (-\partial_\epsilon (s_e \Psi^-)) [\mathbf{I}^-] & & + [\mathbf{\nabla}_d^T] \Psi^+ [\mathbf{\Omega}_d^T] & & + [\mathbf{N}^-_e] (\tau_e \Psi^-) [\mathbf{I}^- - \mathbf{k}^-_e] & & + \mathbf{b}^- = 0.
-                                \end{alignat}
-                            </span>
-                        </li>
-                    </ul>
-                    <div class="fragment fade-in" style="border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; margin-left:100px; margin-right:100px; padding: 20px; text-align:center">
-                        in summary: <span style="font-size: 80%;">$[\mathbf{M}] \partial_t \mathbf{Y}(t) [\mathbf{N}] = [\mathbf{A}_t] \mathbf{Y}(t) [\mathbf{B}_t] + \mathbf{b}$</span>
+                    <div>
+                        $\to$ leads to a coupled kronecker-structured matrix-semidiscretization
+                        <div style="display: flex; justify-content: right;">
+                            <div>
+                                <span style="font-size: 70%"> \begin{alignat}{4} & [\mathbf{N}^+_e] (-\partial_\epsilon (s_e \Psi^+)) [\mathbf{I}^+] & & - [\mathbf{\nabla}_d] \Psi^- [\mathbf{\Omega}_d] & & + [\mathbf{N}^+_e] (\tau_e \Psi^+) [\mathbf{I}^+ - \mathbf{k}^+_e] + [\mathbf{\partial}_d] \Psi^+ [\mathbf{|\Omega|}_d] & & + \mathbf{b}^+ = 0 \\ & [\mathbf{N}^-_e] (-\partial_\epsilon (s_e \Psi^-)) [\mathbf{I}^-] & & + [\mathbf{\nabla}_d^T] \Psi^+ [\mathbf{\Omega}_d^T] & & + [\mathbf{N}^-_e] (\tau_e \Psi^-) [\mathbf{I}^- - \mathbf{k}^-_e] & & + \mathbf{b}^- = 0. \end{alignat} </span>
+                            </div>
+                            <div style="border-width: 5px; border-style: solid; border-color: gray; border-radius: 5px; margin-left: 50px; padding: 10px; text-align: left; max-width: 600px; font-size:80%; width: 600px;">
+                                short notation:
+                                <p style="font-size: 100%; text-align: center;">$[\mathbf{M}] \partial_t \mathbf{Y}(t) [\mathbf{N}] = [\mathbf{A}_t] \mathbf{Y}(t) [\mathbf{B}_t] + \mathbf{b}$</p>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="fragment fade-in" style="margin-top: 20px;">
+                        <h5>Scalar Flux Conservation: $-\partial_\epsilon \rho + \nabla_x \cdot (\int_{S^2} \Omega \psi \, \textrm{d} \Omega) = 0$</h5>
+                        <div style="display:flex; font-size: 100%; justify-content: right;">
+                            <div style="font-size: 80%;">
+                                (scalar) flux $\rho$ in $V_h$<br>
+                                <img width="500px" src="figures/mass_extr.png" />
+                            </div>
+                            <div style="font-size: 80%; margin-left: 50px;">
+                                boundary flux over $\partial V_h$<br>
+                                <img width="500px" src="figures/flux_extr.png" />
+                            </div>
+                            <div style="border-width: 5px; border-style: solid; border-color: gray; border-radius: 5px; margin-left: 50px; padding: 10px; text-align: left; vertical-align: middle; max-width: 600px; width: 600px; font-size: 80%; margin-top: 120px; margin-bottom: 120px;">
+                                with $\mathbf{W}$, $\mathbf{W}^T\mathbf{W} = I$. For conservation we must exactly fulfill
+                                <p style="font-size: 90%; text-align: center;"> \begin{equation} [\mathbf{M}] \partial_t \mathbf{Y}(t) [\mathbf{N} \mathbf{W}] = [\mathbf{A}_t] \mathbf{Y}(t) [\mathbf{B}_t \mathbf{W}] + \mathbf{b} \mathbf{W} \end{equation} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                        <span style="font-weight:bold">Energy integration:</span> implicit trapezoidal rule (dual: implicit midpoint at half-energy steps)</h5>
+                    </div>
+                    
+
+
                     <div class="r-stretch"></div>
                     <ul style="font-size: 40%">
                         <li>
@@ -407,126 +482,78 @@
                 </section>
 
                 <section style="text-align: left;">
+                    <h3>Mixed Variational Formulation</h3>
+                    energy-transient variational formulation (test-function $\phi$)
+
+                    <span style="font-size: 80%"> \begin{align} \partial_\epsilon m_\epsilon(\psi(\epsilon), \phi) + a_\epsilon(\psi(\epsilon), \phi) + b_\epsilon(\phi) = 0 \quad \text{ with } \end{align} \begin{align} m_\epsilon(\psi(\epsilon), \phi) &= \langle -s \, \psi\, \phi \rangle\\ a_\epsilon(\psi(\epsilon), \phi) &= \langle \Omega \cdot \nabla_x \psi^+ \phi^- - \phi^- \Omega \cdot \nabla_x \psi^+ + \Sigma^{\text{tot}}\, \psi \, \phi - \int_{S^2} \Sigma \psi' \textrm{d}\Omega' \phi \rangle + [|n\cdot\Omega|\psi^+\phi^+]\\ b_\epsilon(\phi) &= 2[n\cdot\Omega \, g^{\text{bc}}\phi^+]_{\partial_x^-} \end{align} </span>
+
+                </section>
+
+                </section>
+                
+                <!-- <section style="text-align: left">
                     <h3>Conservation Properties</h3>
-                    <div style="display: flex; justify-content: left;">
-                        <div style="max-width: 1200px;">
+                    <div style="display: flex; justify-content: left">
+                        <div style="max-width: 1200px">
                             <ul>
-                                <li>
-                                    weighted (scalar) flux $\rho(\epsilon, x) = s(\epsilon, x) \int_{S^2} \psi \, \textrm{d}\Omega$
-                                </li>
+                                <li>weighted (scalar) flux $\rho(\epsilon, x) = s(\epsilon, x) \int_{S^2} \psi \, \textrm{d}\Omega$</li>
                                 <li>
                                     <h5>Local Flux Conservation Law</h5>
-                                    <span style="font-size:90%; ">
-                                        \begin{align}
-                                            -\partial_\epsilon \rho + \nabla_x \cdot J &= 0 \\
-                                            n \cdot J &= \int_{n \cdot \Omega > 0} n \cdot \Omega \psi \, \textrm{d} \Omega + \int_{n \cdot \Omega < 0} n \cdot \Omega \psi^{\text{bc}} \, \textrm{d} \Omega
-                                        \end{align}
-                                    </span>
+                                    <span style="font-size: 90%"> \begin{align} -\partial_\epsilon \rho + \nabla_x \cdot J &= 0 \\ n \cdot J &= \int_{n \cdot \Omega > 0} n \cdot \Omega \psi \, \textrm{d} \Omega + \int_{n \cdot \Omega < 0} n \cdot \Omega \psi^{\text{bc}} \, \textrm{d} \Omega \end{align} </span>
                                 </li>
-                                <li>
-                                    current density $J = \int_{S^2} \Omega \psi \, \textrm{d} \Omega$
-                                </li>
+                                <li>current density $J = \int_{S^2} \Omega \psi \, \textrm{d} \Omega$</li>
                                 <li>
                                     The flux conservation law is inherited to the matrix-semidiscretization: testing with $\int_{S^2} (\Upsilon^+(\Omega)^T, \Upsilon^+(\Omega)^T)^T \, \textrm{d} \Omega$ yields it's weak form.
                                     <ul>
-                                        <li>
-                                            $\rho$: even moment of $\psi$
-                                        </li>
-                                        <li>
-                                            $J$: odd moment of $\psi$
-                                        </li>
+                                        <li>$\rho$: even moment of $\psi$</li>
+                                        <li>$J$: odd moment of $\psi$</li>
                                     </ul>
                                 </li>
                                 <li>
                                     We couple even - $L^2$ and odd - $H^1$. For the flux in a test volume $V_h$, $\mathbf{\mathcal{M}}_{V_h} = \int_{V_h} \rho \,\textrm{d}x$ we have
-                                    <span style="font-size: 90%;">
-                                        \begin{equation}
-                                            -\partial_\epsilon \mathbf{\mathcal{M}}_{V_h}(\epsilon) = (\int_{V_h}\mathcal{X}^-(x) \textrm{d} x)^T \cdot ([\mathbf{G}^-])^{-1} \cdot (-[\mathbf{\nabla}_d]^T \cdot  \Psi^+ \cdot \int_{S^2} \Omega_d \Upsilon^+ \textrm{d}\Omega)
-                                        \end{equation}
-                                    </span>
+                                    <span style="font-size: 90%"> \begin{equation} -\partial_\epsilon \mathbf{\mathcal{M}}_{V_h}(\epsilon) = (\int_{V_h}\mathcal{X}^-(x) \textrm{d} x)^T \cdot ([\mathbf{G}^-])^{-1} \cdot (-[\mathbf{\nabla}_d]^T \cdot \Psi^+ \cdot \int_{S^2} \Omega_d \Upsilon^+ \textrm{d}\Omega) \end{equation} </span>
                                 </li>
                             </ul>
                         </div>
-                        <div style="font-size: 80%; margin-left: 50px;">
-                            <div>
-                                <h5>(scalar) flux in $V_h$</h5>
-                                <img width="600px" src="figures/mass_extr.png">
-                            </div>
-                            <div>
-                                <h5>boundary flux over $\partial V_h$</h5>
-                                <img width="600px" src="figures/flux_extr.png">
-                            </div>    
-                        </div>
                     </div>
-                    <div class="fragment fade-in" style="border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; margin-left:100px; margin-right:100px; padding: 20px; text-align:center">
-                        With $\mathbf{W}$, $\mathbf{W}^T\mathbf{W} = I$. For conservation we must exactly fulfill
-                        <span style="font-size: 80%;">
-                            \begin{equation}
-                                [\mathbf{M}] \partial_t \mathbf{Y}(t) [\mathbf{N} \mathbf{W}] = [\mathbf{A}_t] \mathbf{Y}(t) [\mathbf{B}_t  \mathbf{W}] + \mathbf{b} \mathbf{W}
-                            \end{equation}
-                        </span>
-                    </div>
-                </section>
-                
-                <section style="text-align: left" data-auto-animate>
-                    <h3 data-id="headline">Dynamical Low Rank Approximation</h3>
-                    <div data-id="description" style="display: flex; justify-content: center;">
-                        <div style="font-size: 80%; margin-top: 20px; text-align: center; margin-left: 10px;">
+                </section> -->
+
+                <section style="text-align: left">
+                    <h3 data-id="headline">Dynamical Low-Rank Approximation</h3>
+                    <div data-id="description" style="display: flex; justify-content: center">
+                        <div style="font-size: 80%; margin-top: 20px; text-align: center; margin-left: 10px">
                             rank-adaptive basis-update galerkin (BUG) integrator<br />
                             applied to the linear matrix-ode:
                         </div>
                         <div style="margin-left: 200px; text-align: center">\begin{equation} \mathbf{M} \partial_t \mathbf{Y}(t) \mathbf{N} = \mathbf{A}_t \mathbf{Y}(t) \mathbf{B}_t + \mathbf{b}_t \end{equation}</div>
                     </div>
 
-                    <div data-id="starting">
-                        Starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times n}$ (rank $r$):
-                    </div>
+                    <div data-id="starting">Starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times n}$ (rank $r$):</div>
                     <div data-id="k-step">
                         <span style="font-weight: bold">K-Step:</span>
-                        Integrate $\mathbf{K}(t) \in \mathbb{R}^{m \times r}$ from $t_0$ to $t_1$.
-                        With $\mathbf{K}(t_0) = \mathbf{U}_0\mathbf{S}_0$, solve
-                        <span style="font-size: 90%;">
-                            \begin{equation}
-                                [\mathbf{M}] \, \partial_t \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{N} \mathbf{V}_0] = [\mathbf{A}_t] \, \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{B}_t \mathbf{V}_0] + \mathbf{b}_t \mathbf{V}_0.
-                            \end{equation}
-                        </span>
-                        <span style="font-weight: bold; margin-left: 50px;">Augmentation:</span>
+                        Integrate $\mathbf{K}(t) \in \mathbb{R}^{m \times r}$ from $t_0$ to $t_1$. With $\mathbf{K}(t_0) = \mathbf{U}_0\mathbf{S}_0$, solve
+                        <span style="font-size: 90%"> \begin{equation} [\mathbf{M}] \, \partial_t \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{N} \mathbf{V}_0] = [\mathbf{A}_t] \, \mathbf{K}(t) \, [\mathbf{V}_0^T \mathbf{B}_t \mathbf{V}_0] + \mathbf{b}_t \mathbf{V}_0. \end{equation} </span>
+                        <span style="font-weight: bold; margin-left: 50px">Augmentation:</span>
                         <span data_id="basis_augmentation_U">Compute $\mathbf{\hat{U}} = \text{ortho}(\mathbf{K}(t_1), \mathbf{U}_0) \in \mathbb{R}^{m \times \hat{r}}$.</span>
                     </div>
                     <div data-id="l-step">
                         <span style="font-weight: bold">L-Step:</span>
-                        Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$. 
-                        With $\mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T$, solve
-                        <span style="font-size: 90%;">
-                            \begin{equation}
-                                [\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}] = [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t] + \mathbf{U}^T_0\mathbf{b}_t.
-                            \end{equation}
-                        </span>
-                        <span style="font-weight: bold; margin-left: 50px;">Augmentation:</span>
+                        Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$. With $\mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T$, solve
+                        <span style="font-size: 90%"> \begin{equation} [\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}] = [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t] + \mathbf{U}^T_0\mathbf{b}_t. \end{equation} </span>
+                        <span style="font-weight: bold; margin-left: 50px">Augmentation:</span>
                         <span data_id="basis_augmentation_V">Compute $\mathbf{\hat{V}} = \text{ortho}(\mathbf{L}(t_1), \mathbf{V}_0) \in \mathbb{R}^{n \times \tilde{r}}$.</span>
                     </div>
                     <div>
                         <span style="font-weight: bold">S-Step:</span>
-                        Integrate $\mathbf{\hat{S}}(t) \in \mathbb{R}^{\hat{r}\times \tilde{r}}$ from $t_0$ to $t_1$.
-                        With $\mathbf{\hat{S}}(t_0) = [\mathbf{\hat{U}}^T\mathbf{U}_0]\, \mathbf{S}_0 \, [\mathbf{V}_0^T\mathbf{\hat{V}}]$, solve
-                        <span style="font-size: 90%;">
-                            \begin{equation}
-                                [\mathbf{\hat{U}}^T \mathbf{M} \mathbf{\hat{U}}] \, \partial_t \mathbf{\hat{S}}(t) \, [\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}] = [\mathbf{\hat{U}}^T \mathbf{A}_t \mathbf{\hat{U}}] \, \mathbf{\hat{S}}(t) \, [\mathbf{\hat{V}}^T \mathbf{B}_t \mathbf{\hat{V}}] + \mathbf{\hat{U}}^T \mathbf{b}_t \mathbf{\hat{V}}.
-                            \end{equation}
-                        </span>
+                        Integrate $\mathbf{\hat{S}}(t) \in \mathbb{R}^{\hat{r}\times \tilde{r}}$ from $t_0$ to $t_1$. With $\mathbf{\hat{S}}(t_0) = [\mathbf{\hat{U}}^T\mathbf{U}_0]\, \mathbf{S}_0 \, [\mathbf{V}_0^T\mathbf{\hat{V}}]$, solve
+                        <span style="font-size: 90%"> \begin{equation} [\mathbf{\hat{U}}^T \mathbf{M} \mathbf{\hat{U}}] \, \partial_t \mathbf{\hat{S}}(t) \, [\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}] = [\mathbf{\hat{U}}^T \mathbf{A}_t \mathbf{\hat{U}}] \, \mathbf{\hat{S}}(t) \, [\mathbf{\hat{V}}^T \mathbf{B}_t \mathbf{\hat{V}}] + \mathbf{\hat{U}}^T \mathbf{b}_t \mathbf{\hat{V}}. \end{equation} </span>
                         <span style="font-weight: bold">Truncate: </span>
                         $\mathbf{P}_1\mathbf{S}_1\mathbf{Q}_1^T \approx \mathbf{\hat{S}}(t_1)$ and set $\mathbf{U}_1 = \mathbf{\hat{U}}\mathbf{P}_1 \in \mathbb{R}^{m \times r_{\text{new}}}$ and $\mathbf{V}_1 = \mathbf{\hat{V}}\mathbf{Q}_1 \in \mathbb{R}^{n \times r_{\text{new}}}$.
                     </div>
-                    <div class="fragment fade-in" style="text-align: center; border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; padding: 10px; margin: 30px;">
-                        <p>
-                            If $\mathbf{V}_0\mathbf{V}_0^T \mathbf{W} = \mathbf{W}$ (if the columns of $\mathbf{W}$ are $\in \text{span}(\mathbf{V}_0)$), the <span style="font-weight: bold;">K-step</span> satisfies local conservation.
-                        </p> 
-                        <p>
-                            $\to$ use $\mathbf{K}(t_1)$ to enforce conservation. (Only updates $\mathbf{\hat{U}}$.)
-                        </p>
-                        <p>
-                            "Find truncation strategy such that $\mathbf{U}_1 \mathbf{S}_1 \mathbf{V}_1^T \mathbf{W} = \mathbf{K}(t_1) \mathbf{V}_0^T \mathbf{W}$ holds exactly" 
-                        </p>
+                    <div class="fragment fade-in" style="text-align: center; border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; padding: 10px; margin: 30px">
+                        <p>If $\mathbf{V}_0\mathbf{V}_0^T \mathbf{W} = \mathbf{W}$ (if the columns of $\mathbf{W}$ are $\in \text{span}(\mathbf{V}_0)$), the <span style="font-weight: bold">K-step</span> satisfies local conservation.</p>
+                        <p>$\to$ use $\mathbf{K}(t_1)$ to enforce conservation. (Only updates $\mathbf{\hat{U}}$.)</p>
+                        <p>"Find truncation strategy such that $\mathbf{U}_1 \mathbf{S}_1 \mathbf{V}_1^T \mathbf{W} = \mathbf{K}(t_1) \mathbf{V}_0^T \mathbf{W}$ holds exactly"</p>
                     </div>
 
                     <div class="r-stretch"></div>
@@ -544,258 +571,281 @@
                     </ul>
                 </section>
 
-                <section style="text-align: left" data-auto-animate>
+                <section style="text-align: left">
                     <h3 data-id="headline">Conservative Low-Rank Integration</h3>
-                    <div data-id="description" style="display: flex; justify-content: center;">
-                        <div style="font-size: 80%; margin-top: 20px; text-align: center; margin-left: 10px;">
+                    <div data-id="description" style="display: flex; justify-content: center">
+                        <div style="font-size: 80%; margin-top: 20px; text-align: center; margin-left: 10px">
                             a mass-conservative variant of rank-adaptive (BUG) integrator<br />
                             applied to the linear matrix-ode:
                         </div>
                         <div style="margin-left: 200px; text-align: center">\begin{equation} \mathbf{M} \partial_t \mathbf{Y}(t) \mathbf{N} = \mathbf{A}_t \mathbf{Y}(t) \mathbf{B}_t + \mathbf{b}_t \end{equation}</div>
                     </div>
 
-                    <div data-id="starting">
-                        Starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times n}$ (rank $r$):
-                    </div>
+                    <div data-id="starting">Starting from $\mathbf{Y}(t_0) \approx \mathbf{U}_0 \mathbf{S}_0 \mathbf{V}^T_0 \in \mathbb{R}^{m \times n}$ (rank $r$):</div>
                     <div data-id="l-step">
                         <span style="font-weight: bold">L-Step:</span>
-                            Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$. With $\mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T$, solve
-                            <span style="font-size: 90%;">
-                                \begin{equation}
-                                    [\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}] = [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t] + \mathbf{U}^T_0\mathbf{b}_t.
-                                \end{equation}
-                            </span>
-                        <span style="font-weight: bold; margin-left: 50px;">Augmentation:</span>
+                        Integrate $\mathbf{L}(t) \in \mathbb{R}^{n \times r}$ from $t_0$ to $t_1$. With $\mathbf{L}(t_0)^T = \mathbf{S}_0\mathbf{V}_0^T$, solve
+                        <span style="font-size: 90%"> \begin{equation} [\mathbf{U}_0^T \mathbf{M} \mathbf{U}_0] \, \partial_t \mathbf{L}(t)^T \, [\mathbf{N}] = [\mathbf{U}_0^T \mathbf{A}_t \mathbf{U}_0] \, \mathbf{L}(t)^T \, [\mathbf{B}_t] + \mathbf{U}^T_0\mathbf{b}_t. \end{equation} </span>
+                        <span style="font-weight: bold; margin-left: 50px">Augmentation:</span>
                         <span data_id="basis_augmentation_V">Compute $\mathbf{\hat{V}} = \text{ortho}(\mathbf{L}(t_1), \mathbf{V}_0, \mathbf{W}) \in \mathbb{R}^{m \times \hat{r}}$.</span>
                     </div>
                     <div data-id="k-step">
                         <div data-id="k-step_no_augmentation">
                             <span style="font-weight: bold">Augmented K-Step:</span>
-                            Integrate $\mathbf{\hat{K}}(t) \in \mathbb{R}^{m \times \hat{r}}$ from $t_0$ to $t_1$.
-                            With $\mathbf{\hat{K}}(t_0) = \mathbf{U}_0\mathbf{S}_0[\mathbf{V}_0^T \mathbf{\hat{V}}]$, solve
-                            <span style="font-size: 90%;">
-                                \begin{equation}
-                                    [\mathbf{M}] \, \partial_t \mathbf{\hat{K}}(t) \, [\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}] = [\mathbf{A}_t] \, \mathbf{\hat{K}}(t) \, [\mathbf{\hat{V}}^T \mathbf{B}_t \mathbf{\hat{V}}] + \mathbf{b}_t \mathbf{\hat{V}}.
-                                \end{equation}
-                            </span>
+                            Integrate $\mathbf{\hat{K}}(t) \in \mathbb{R}^{m \times \hat{r}}$ from $t_0$ to $t_1$. With $\mathbf{\hat{K}}(t_0) = \mathbf{U}_0\mathbf{S}_0[\mathbf{V}_0^T \mathbf{\hat{V}}]$, solve
+                            <span style="font-size: 90%"> \begin{equation} [\mathbf{M}] \, \partial_t \mathbf{\hat{K}}(t) \, [\mathbf{\hat{V}}^T \mathbf{N} \mathbf{\hat{V}}] = [\mathbf{A}_t] \, \mathbf{\hat{K}}(t) \, [\mathbf{\hat{V}}^T \mathbf{B}_t \mathbf{\hat{V}}] + \mathbf{b}_t \mathbf{\hat{V}}. \end{equation} </span>
                         </div>
                     </div>
                     <div class="fragment fade-in">
-                        <span style="font-weight: bold">Truncation:</span> Compute $\mathbf{\hat{W}} = \mathbf{\hat{V}}^T \mathbf{W}$ and the QR decomposition $\mathbf{\tilde{V}} \mathbf{\tilde{R}} = \mathbf{\hat{V}} - \mathbf{W}\mathbf{\hat{W}}^T$ (rank-revealing).<br>
-                        Truncate the SVD of the $\mathbf{W}$-orthogonal part $\mathbf{\tilde{P}}_1 \mathbf{\tilde{S}}_1 \mathbf{\tilde{Q}}_1^T \approx \mathbf{\hat{K}}(t_1)\mathbf{\tilde{R}}^T$.
-                        Compute the left basis as the QR decomposition $\mathbf{U}_1 \mathbf{R} = \mathbf{\hat{K}}(t_1) \mathbf{\hat{W}}, \mathbf{\tilde{P}}_1$
-                        <span style="font-size: 90%;">
-                        \begin{equation}
-                            \mathbf{Y}(t_1) \approx \mathbf{U}_1 \underbrace{\mathbf{R} \begin{pmatrix} I & 0 \\ 0 & \mathbf{\tilde{S}}_1\end{pmatrix}}_{=\mathbf{S}_1} \underbrace{\begin{pmatrix} \mathbf{W} &  \mathbf{\tilde{V}} \mathbf{\tilde{Q}}_1 \end{pmatrix}^T}_{=\mathbf{V_1}^T}
-                        \end{equation}
-                        </span>
+                        <span style="font-weight: bold">Truncation:</span> Compute $\mathbf{\hat{W}} = \mathbf{\hat{V}}^T \mathbf{W}$ and the QR decomposition $\mathbf{\tilde{V}} \mathbf{\tilde{R}} = \mathbf{\hat{V}} - \mathbf{W}\mathbf{\hat{W}}^T$ (rank-revealing).<br />
+                        Truncate the SVD of the $\mathbf{W}$-orthogonal part $\mathbf{\tilde{P}}_1 \mathbf{\tilde{S}}_1 \mathbf{\tilde{Q}}_1^T \approx \mathbf{\hat{K}}(t_1)\mathbf{\tilde{R}}^T$. Compute the left basis as the QR decomposition $\mathbf{U}_1 \mathbf{R} = \mathbf{\hat{K}}(t_1) \mathbf{\hat{W}}, \mathbf{\tilde{P}}_1$
+                        <span style="font-size: 90%"> \begin{equation} \mathbf{Y}(t_1) \approx \mathbf{U}_1 \underbrace{\mathbf{R} \begin{pmatrix} I & 0 \\ 0 & \mathbf{\tilde{S}}_1\end{pmatrix}}_{=\mathbf{S}_1} \underbrace{\begin{pmatrix} \mathbf{W} & \mathbf{\tilde{V}} \mathbf{\tilde{Q}}_1 \end{pmatrix}^T}_{=\mathbf{V_1}^T} \end{equation} </span>
                     </div>
-                    
-                    <div class="fragment fade-in" style="text-align: center; border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; padding: 10px; margin: 30px;">
-                        <p style="margin:0px;">Shares robustness (in the presence of smalle singular values) with the BUG integrator</p>
-                        <p style="margin:0px;">The <span style="font-weight: bold;">augmented K-step</span> satisfies the local conservation laws.</p>
-                        <p style="margin:0px;">The conservative truncation retains the conserved quantities.</p>
-                        <p style="margin:0px;">The conservative tuncation is stable.</p>
+
+                    <div class="fragment fade-in" style="text-align: center; border-width: 5px; border-style: solid; border-color: gray; border-radius: 10px; padding: 10px; margin: 30px">
+                        <p style="margin: 0px">Shares robustness (in the presence of small singular values) with the BUG integrator</p>
+                        <p style="margin: 0px">The <span style="font-weight: bold">augmented K-step</span> satisfies the local conservation laws.</p>
+                        <p style="margin: 0px">The conservative truncation retains the conserved quantities.</p>
+                        <p style="margin: 0px">The conservative tuncation is stable.</p>
                     </div>
                 </section>
 
-                <section style="text-align: left">
+                <!-- <section style="text-align: left">
                     <h3>Application to the mixed Variational Framework</h3>
-                    <div>
-                        Combine the low rank approximation with the $2\times2$ (even-odd) block structure of the mixed-variational formulation. We approximate
-                    </div>
-                    \begin{equation}
-                        \psi(x, \epsilon, \Omega) \approx \underbrace{\mathcal{X}^+(x)^T [\color{Orange}{\mathbf{U}^+_\epsilon} \mathbf{S}^+_\epsilon (\color{Blue}{\mathbf{V}^+_\epsilon})^T] \Upsilon^+(\Omega)}_{\approx \psi^+(x, \epsilon, \Omega)} + 
-                                                          \underbrace{\mathcal{X}^-(x)^T [\color{Tomato}{\mathbf{U}^-_\epsilon} \mathbf{S}^-_\epsilon (\color{MediumPurple}{\mathbf{V}^-_\epsilon})^T] \Upsilon^-(\Omega)}_{\approx \psi^-(x, \epsilon, \Omega)}
-                    \end{equation}
-                    <div style="font-size: 50%;">
-                    \begin{equation}
-                        \begin{alignedat}{4}
-                            & [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [-\partial_\epsilon (s_e \mathbf{S}^+)] [(\color{Blue}{\mathbf{V}^+})^T\mathbf{I}^+ \color{Blue}{\mathbf{V^+}}] 
-                            & & - [(\color{Orange}{\mathbf{U}^+})^T \mathbf{\nabla}_d \color{Tomato}{\mathbf{U}^-}] \mathbf{S}^- [(\color{MediumPurple}{\mathbf{V}^-})^T \mathbf{\Omega}_d \color{Blue}{\mathbf{V^+}}] 
-                            & & + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [\tau_e \Psi^+]  [(\color{Blue}{\mathbf{V}^+})^T (\mathbf{I}^+ - \mathbf{k}^+_e)  \color{Blue}{\mathbf{V^+}}]  
-                            + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{\partial}_d\color{Orange}{\mathbf{U}^+}]  \Psi^+  [(\color{Blue}{\mathbf{V}^+})^T\mathbf{|\Omega|}_d \color{Blue}{\mathbf{V^+}}] 
-                            & & + (\color{Orange}{\mathbf{U}^+})^T\mathbf{b}^+\color{Blue}{\mathbf{V^+}} = 0 \\ 
-                            & [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [-\partial_\epsilon (s_e \mathbf{S}^-)] [(\color{MediumPurple}{\mathbf{V}^-})^T\mathbf{I}^- \color{MediumPurple}{\mathbf{V^-}}] 
-                            & & + [(\color{Tomato}{\mathbf{U}^-})^T \mathbf{\nabla}_d^T \color{Orange}{\mathbf{U}^+}] \mathbf{S}^+ [(\color{Blue}{\mathbf{V}^+})^T \mathbf{\Omega}_d^T \color{MediumPurple}{\mathbf{V^-}}] 
-                            & & + [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [\tau_e \Psi^-] [(\color{MediumPurple}{\mathbf{V}^-})^T (\mathbf{I}^- - \mathbf{k}^-_e) \color{MediumPurple}{\mathbf{V^-}}] 
-                            & & + (\color{Tomato}{\mathbf{U}^-})^T\mathbf{b}^-\color{MediumPurple}{\mathbf{V^-}} = 0.
-                        \end{alignedat} 
-                    \end{equation}
-                    </div>
-                </section>
+                    <div style="margin-top: 100px;">Combine the low rank approximation with the $2\times2$ (even-odd) block structure of the mixed-variational formulation. We approximate</div>
+                    \begin{equation} \psi(x, \epsilon, \Omega) \approx \underbrace{\mathcal{X}^+(x)^T [\color{Orange}{\mathbf{U}^+_\epsilon} \mathbf{S}^+_\epsilon (\color{Blue}{\mathbf{V}^+_\epsilon})^T] \Upsilon^+(\Omega)}_{\approx \psi^+(x, \epsilon, \Omega)} + \underbrace{\mathcal{X}^-(x)^T [\color{Tomato}{\mathbf{U}^-_\epsilon} \mathbf{S}^-_\epsilon (\color{MediumPurple}{\mathbf{V}^-_\epsilon})^T] \Upsilon^-(\Omega)}_{\approx \psi^-(x, \epsilon, \Omega)} \end{equation}
+                    <div style="font-size: 50%; margin-top: 100px;">\begin{equation} \begin{alignedat}{4} & [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [-\partial_\epsilon (s_e \mathbf{S}^+)] [(\color{Blue}{\mathbf{V}^+})^T\mathbf{I}^+ \color{Blue}{\mathbf{V^+}}] & & - [(\color{Orange}{\mathbf{U}^+})^T \mathbf{\nabla}_d \color{Tomato}{\mathbf{U}^-}] \mathbf{S}^- [(\color{MediumPurple}{\mathbf{V}^-})^T \mathbf{\Omega}_d \color{Blue}{\mathbf{V^+}}] & & + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{N}^+_e\color{Orange}{\mathbf{U}^+}] [\tau_e \Psi^+] [(\color{Blue}{\mathbf{V}^+})^T (\mathbf{I}^+ - \mathbf{k}^+_e) \color{Blue}{\mathbf{V^+}}] + [(\color{Orange}{\mathbf{U}^+})^T\mathbf{\partial}_d\color{Orange}{\mathbf{U}^+}] \Psi^+ [(\color{Blue}{\mathbf{V}^+})^T\mathbf{|\Omega|}_d \color{Blue}{\mathbf{V^+}}] & & + (\color{Orange}{\mathbf{U}^+})^T\mathbf{b}^+\color{Blue}{\mathbf{V^+}} = 0 \\ & [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [-\partial_\epsilon (s_e \mathbf{S}^-)] [(\color{MediumPurple}{\mathbf{V}^-})^T\mathbf{I}^- \color{MediumPurple}{\mathbf{V^-}}] & & + [(\color{Tomato}{\mathbf{U}^-})^T \mathbf{\nabla}_d^T \color{Orange}{\mathbf{U}^+}] \mathbf{S}^+ [(\color{Blue}{\mathbf{V}^+})^T \mathbf{\Omega}_d^T \color{MediumPurple}{\mathbf{V^-}}] & & + [(\color{Tomato}{\mathbf{U}^-})^T\mathbf{N}^-_e\color{Tomato}{\mathbf{U}^-}] [\tau_e \Psi^-] [(\color{MediumPurple}{\mathbf{V}^-})^T (\mathbf{I}^- - \mathbf{k}^-_e) \color{MediumPurple}{\mathbf{V^-}}] & & + (\color{Tomato}{\mathbf{U}^-})^T\mathbf{b}^-\color{MediumPurple}{\mathbf{V^-}} = 0. \end{alignedat} \end{equation}</div>
+                    <p style="font-style: italic; text-align: center; margin-top: 100px;">bookkeeping...</p>
+                    <ul>
+                        <li>
+                            software engineering challenge: how to efficiently setup/store/compress/preallocate/update structured systems of linear equations?
+                        </li>
+                        <li>
+                            my (poor-man's) solutions: store a computational graph of matrix operations ($\times$, $+$, $\otimes$...)
+                        </li>
+                    </ul>
+                </section> -->
 
                 <section style="text-align: left">
                     <h3>Slab-Geometry Testcases (pure transport)</h3>
-                    <span style="font-size: 80%;">
-                        \begin{equation}
-                            \partial_t \psi + \mu \partial_x \psi = 0 \quad \mu \in [-1, 1]
-                        \end{equation}
-                    </span>
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
-                        <div style="text-align: center;">
-                            <h5 style="transform: rotate(-90deg); transform-origin: center;">Planesource</h5>
+                    <span style="font-size: 80%"> \begin{equation} \partial_t \psi + \mu \partial_x \psi = 0 \quad \mu \in [-1, 1] \end{equation} </span>
+                    <div style="display: flex; font-size: 80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin: 10px; padding: 10px; border-radius: 10px">
+                        <div style="text-align: center">
+                            <h5 style="transform: rotate(-90deg); transform-origin: center">Planesource</h5>
                         </div>
-                        <div style="text-align: center;">
+                        <div style="text-align: center">
                             <h5>Angle-average $\int_{S^2} \psi|_{t=1} \, \textrm{d} \Omega$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_linesource/final.jpg" />
                         </div>
-                        <div style="text-align: center;">
-                            <h5>Entropy Difference $\mathcal{E}(\epsilon) = \langle \psi^2 \rangle$</h5>
+                        <div style="text-align: center">
+                            <h5>L2-Energy Difference $\mathcal{E}(\epsilon) = \langle \psi^2 \rangle$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_linesource/energy.jpg" />
                         </div>
-                        <div style="text-align: center;">
-                            <h5>Mass Difference $\mathcal{M}(\epsilon) = \langle \psi \rangle$</h5>
+                        <div style="text-align: center">
+                            <h5>Scalar Flux Difference $\mathcal{M}(\epsilon) = \langle \psi \rangle$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_linesource/mass.jpg" />
                         </div>
                     </div>
-                    <div class="fragment fade-in" style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; padding:10px; border-radius: 10px;">
-                        <div style="text-align: center;">
-                            <h5 style="transform: rotate(-90deg); transform-origin: center;">Boundary Excitation</h5>
+                    <div class="fragment fade-in" style="display: flex; font-size: 80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin: 10px; padding: 10px; border-radius: 10px">
+                        <div style="text-align: center">
+                            <h5 style="transform: rotate(-90deg); transform-origin: center">Boundary Excitation</h5>
                         </div>
-                        <div style="text-align: center;">
+                        <div style="text-align: center">
                             <h5>Angle-average $\int_{S^2} \psi|_t \, \textrm{d} \Omega$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_boundary/mass_over_time_energy.jpg" />
                         </div>
-                        <div style="text-align: center;">
-                            <h5>Relative Entropy $\mathcal{E}(\epsilon) = \langle \psi^2 \rangle$</h5>
+                        <div style="text-align: center">
+                            <h5>Relative L2-Energy $\mathcal{E}(\epsilon) = \langle \psi^2 \rangle$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_boundary/energy.jpg" />
                         </div>
-                        <div style="text-align: center;">
-                            <h5>Relative Mass $\mathcal{M}(\epsilon) = \langle \psi \rangle$</h5>
+                        <div style="text-align: center">
+                            <h5>Relative Scalar Flux $\mathcal{M}(\epsilon) = \langle \psi \rangle$</h5>
                             <img src="figures/figures_low_rank/1D_vacuum_boundary/mass.jpg" />
                         </div>
                     </div>
                 </section>
 
                 <section style="text-align: left">
-                    <h3 style="margin: 0px;">Line-Source Benchmark with rank-adaptive (relative) truncation</h3>
-                    <div style="display: flex; justify-content: center; align-items: center; font-size: 80%;">
-                        <div>
-                            \begin{equation}
-                                \partial_t \psi + \Omega \cdot \nabla_x \psi + \psi = \frac{1}{4\pi} \int_{S^2} \psi' \textrm{d}\Omega
-                            \end{equation}
-                        </div>
+                    <h3 style="margin: 0px">Line-Source Benchmark with rank-adaptive (relative) truncation</h3>
+                    <div style="display: flex; justify-content: center; align-items: center; font-size: 80%">
+                        <div>\begin{equation} \partial_t \psi + \Omega \cdot \nabla_x \psi + \psi = \frac{1}{4\pi} \int_{S^2} \psi' \textrm{d}\Omega \end{equation}</div>
 
-                        <div style="margin-left: 100px;">
-                            $||(\sigma_{r_{\text{new}} + 1}, ..., \sigma_{r_{\text{max}}})||_2 \leq \vartheta ||(\sigma_1, ... \sigma_{r_{\text{max}}})||_2$
-                        </div>
+                        <div style="margin-left: 100px">$||(\sigma_{r_{\text{new}} + 1}, ..., \sigma_{r_{\text{max}}})||_2 \leq \vartheta ||(\sigma_1, ... \sigma_{r_{\text{max}}})||_2$</div>
                     </div>
-                    
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
+
+                    <div style="display: flex; font-size: 80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin: 10px; margin-left: 100px; margin-right: 100px; padding: 10px; border-radius: 10px; justify-content: center">
                         <div>
-                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center;">BUG Integrator</h5>
+                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center">BUG Integrator</h5>
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 2.5 \times 10^{-2}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 2.5 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 1.25 \times 10^{-2}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 1.25 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 6.25 \times 10^{-3}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 6.25 \times 10^{-3}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:def}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">Lineout $(y = 0)$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:def}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">Lineout $(y = 0)$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:def}().jpg" />
                         </div>
                     </div>
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
+                    <div style="display: flex; font-size: 80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin: 10px; margin-left: 100px; margin-right: 100px; padding: 10px; border-radius: 10px; justify-content: center">
                         <div>
-                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center;">Conservative BUG</h5>
+                            <h5 style="writing-mode: vertical-lr; transform: rotate(180deg); transform-origin: center">Conservative BUG</h5>
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 2.5 \times 10^{-2}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 2.5 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_2_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 1.25 \times 10^{-2}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 1.25 \times 10^{-2}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_3_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">$\vartheta = 6.25 \times 10^{-3}$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">$\vartheta = 6.25 \times 10^{-3}$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/final_47_4_Val{:cons}().jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
-                            <h5 style="margin: 0px;">Lineout $(y = 0)$</h5>
-                            <img style="margin: 0px; max-width:300px;" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:cons}().jpg" />
+                        <div style="text-align: center; margin-left: 50px">
+                            <h5 style="margin: 0px">Lineout $(y = 0)$</h5>
+                            <img style="margin: 0px; max-width: 300px" src="figures/figures_low_rank/2D_linesource/lineout_47_Val{:cons}().jpg" />
                         </div>
                     </div>
-                    <div style="display: flex; font-size:80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin:10px; margin-left:100px; margin-right:100px; padding:10px; border-radius: 10px; justify-content: center;">
-                        <div style="text-align: center; margin-left: 50px;">
+                    <div style="display: flex; font-size: 80%; align-items: center; border-width: 2px; border-style: dashed; border-color: gray; margin: 10px; margin-left: 100px; margin-right: 100px; padding: 10px; border-radius: 10px; justify-content: center">
+                        <div style="text-align: center; margin-left: 50px">
                             <h5>Reference $P_{47}$</h5>
-                            <img style="margin: 0px; max-width:350px;" src="figures/figures_low_rank/2D_linesource/final_47_full.jpg" />
+                            <img style="margin: 0px; max-width: 350px" src="figures/figures_low_rank/2D_linesource/final_47_full.jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
+                        <div style="text-align: center; margin-left: 50px">
                             <h5>Rank Evolution</h5>
-                            <img style="margin: 0px; max-width:450px;" src="figures/figures_low_rank/2D_linesource/ranks.jpg" />
+                            <img style="margin: 0px; max-width: 450px" src="figures/figures_low_rank/2D_linesource/ranks.jpg" />
                         </div>
-                        <div style="text-align: center; margin-left: 50px;">
+                        <div style="text-align: center; margin-left: 50px">
                             <h5>Mass Evolution</h5>
-                            <img style="margin: 0px; max-width:450px;" src="figures/figures_low_rank/2D_linesource/mass.jpg" />
+                            <img style="margin: 0px; max-width: 450px" src="figures/figures_low_rank/2D_linesource/mass.jpg" />
                         </div>
+                    </div>
+                    <div class="r-stretch"></div>
+                    <ul style="font-size: 40%">
+                        <li>
+                            Garrett, C. K., Hauck, C. D. (2013).
+                            <b>A Comparison of Moment Closures for Linear Kinetic Transport Equations: The Line Source Benchmark</b>.
+                            <a href="https://doi.org/10.1080/00411450.2014.910226">doi:10.1080/00411450.2014.910226</a>
+                        </li>
+                        <li>
+                            Ceruti, G., Kusch, J. & Lubich, C. (2022).
+                            <b>A rank-adaptive robust integrator for dynamical low-rank approximation</b>.
+                            <a href="https://doi.org/10.1007/s10543-021-00907-7">doi:10.1007/s10543-021-00907-7</a>
+                        </li>
+                    </ul>
+                </section>
+
+                <section style="text-align: left">
+                    <h3>EPMA Testcase: Benchmarks/Memory Consumption</h3>
+                    <ul>
+                        <li>
+                            Al with a small circular ($r=80\textrm{nm}$) Cr inclusion.
+                        </li>
+                    </ul>
+                    <div style="display: flex; justify-content: center">
+                        <div style="text-align: center">
+                            <h5 style="font-size: 80%">Deterministic $P_{27}$</h5>
+                            <img style="max-width: 500px; margin-top: 0px;" src="figures/figures_low_rank/2D_epma/PN_result.jpg" />
+                        </div>
+                        <div style="text-align: center">
+                            <h5 style="font-size: 80%">Monte Carlo</h5>
+                            <img style="max-width: 500px; margin-top: 0px;" src="figures/figures_low_rank/2D_epma/MC_result.jpg" />
+                        </div>
+                        <div>
+                            <ul>
+                                <li>Compare energy-angle averaged flux $\int_{\epsilon_0}^{\epsilon_1} \int_{S^2}\psi\, \textrm{d}\Omega \textrm{d}\epsilon$</li>
+                                <li>visually match Monte Carlo</li>
+                                <li>Use the deterministic $P_{27}$ as a reference result</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fragment fade-in">
+                    <div style="display: flex; justify-content: left">
+                        <div style="margin-top: 200px; max-width: 200px; margin-right: 30px; margin-left: 50px;">
+                            Error over Runtime
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <h5 style="font-size: 80%">rel. $L^2(\mathcal{R})$ error<br><span style="color: white;">x</span></h5>
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/L2_error.jpg" />
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <h5 style="font-size: 80%">rel. $L^{\infty}(\mathcal{R})$ error<br><span style="color: white;">x</span></h5>
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/Linf_error.jpg" />
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <h5 style="font-size: 80%">rel. EPMA-Measurement Error (energy-weighted, inclusion)</h5>
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/M_error.jpg" />
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: left">
+                        <div style="margin-top: 100px; max-width: 200px; margin-right: 30px; margin-left: 50px;">
+                            Error over DOF
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/L2_error_memory.jpg" />
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/Linf_error_memory.jpg" />
+                        </div>
+                        <div style="text-align: center; max-width: 500px;">
+                            <img style="max-width: 450px; margin-top: 0px; margin-bottom: 0px;" src="figures/figures_low_rank/2D_epma/M_error_memory.jpg" />
+                        </div>
+                    </div>
                     </div>
                 </section>
 
                 <section style="text-align: left">
-                    <h3>EPMA Testcase with Benchmarks/Memory Consumption</h3>
-                    <div style="display: flex; justify-content: center;">
-                        <div style="text-align: center">
-                            <h5 style="font-size: 80%;">$P_{27}$</h5>
-                            <img style="max-width: 500px" src="figures/figures_low_rank/2D_epma/PN_result.jpg" />
-                        </div>
-                        <div style="text-align: center">
-                            <h5 style="font-size: 80%;">
-                                Monte Carlo <span style="font-family: monospace">NeXLCore.jl</span> (adapted)
-                            </h5>
-                            <img style="max-width: 500px" src="figures/figures_low_rank/2D_epma/MC_result.jpg" />
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: center;">
-                        <div style="text-align: center;">
-                            <h5 style="font-size: 80%;">$||\langle \psi \rangle_{S^2} - \langle\psi_{P_{27}}\rangle_{S^2}||_{L^2(\mathcal{R})}$</h5>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/L2_error.jpg" />
-                        </div>
-                        <div style="text-align: center;">
-                            <h5 style="font-size: 80%;">$||\langle \psi \rangle_{S^2} - \langle\psi_{P_{27}}\rangle_{S^2}||_{L^\infty(\mathcal{R})}$</h5>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/Linf_error.jpg" />
-                        </div>
-                        <div style="text-align: center;">
-                            <h5 style="font-size: 80%;">Measurement Error</h5>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/M_error.jpg" />
-                        </div>
-                    </div>
-                    <div style="display: flex; justify-content: center;">
-                        <div>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/L2_error_memory.jpg" />
-                        </div>
-                        <div>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/Linf_error_memory.jpg" />
-                        </div>
-                        <div>
-                            <img style="max-width: 450px;" src="figures/figures_low_rank/2D_epma/M_error_memory.jpg" />
-                        </div>
-                    </div>
-                </section>
-
-                <section style="text-align: left">
-                    <h3>EPMA Testcase</h3>
+                    <h3>EPMA Testcase: Dynamical Low-Rank Adjoint Transport</h3>
+                    <ul>
+                        <li>Observed X-ray intensities for multiple beam positions</li>
+                        <li>Additionally "conserve" the beam/boundary condition mode</li>
+                    </ul>
                     <div style="display: flex">
-                        <div style="text-align: center">
+                        <div style="text-align: center; max-width: 800px;">
                             <img src="figures/figures_low_rank/2D_epma_adjoint/measurements_Al.jpg" />
+                            <ul>
+                                <li>ranks increased to $\sim 6$ (default) $\sim 9$ (cons.) $\sim 12$(cons., beam)</li>
+                            </ul>
                         </div>
-                        <div style="text-align: center">
+                        <div style="text-align: center; max-width: 800px;">
                             <img src="figures/figures_low_rank/2D_epma_adjoint/measurements_Cr.jpg" />
+                            <ul>
+                                <li>ranks increased to $\sim 30$ (default) $\sim 50$ (cons.) $\sim 60$(cons., beam)</li>
+                            </ul>
                         </div>
                     </div>
+                    <div class="fragment fade-in">
+                        <h3 style="margin-top: 80px;">Outlook</h3>
+                        <ul>
+                            <li>We must understand/control errors.</li>
+                            <li>Think more globally about the system $Y = H\cdot A^{-1} \cdot G$ (adjoint error control for dlr?).</li>
+                            <li>Checkerboard pattern in the zeroth moment for little scattering/pure transport (stationary mixed-variational form is unstable for pure transport) (use $L^2$-$H(\textrm{div})$-$H^1$-$L^2$-$H^1$ ...)</li>
+                        </ul>
+
+                        <div class="r-stretch"></div>
+                        <ul style="font-size: 40%">
+                            <li>Source Code/Presentation Slides: <a href="https://github.com/tam724" style="font-size: 100%;"><tt>github.com/tam724/{EPMAfem.jl, presentation_conservative_dlr_for_epma}</tt></a></li>
+                        </ul>
+                    </div>
+
                 </section>
 
-                <section style="text-align: left">
+                <!-- <section style="text-align: left;">
+
+                </section> -->
+
+                <!-- <section style="text-align: left">
                     <h3>Outlook</h3>
-                </section>
+                </section> -->
             </div>
         </div>
 
